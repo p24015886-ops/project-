@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SciSparkQuiz | Quiz</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #141e30;
+    background: linear-gradient(to right, #243b55, #141e30);
+    color: white;
+    padding: 40px;
+}
+
+.container {
+    max-width: 800px;
+    margin: auto;
+}
+
+.question-box {
+    background: rgba(255,255,255,0.05);
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    padding: 8px;
+    margin: 5px 0;
+    background: rgba(0,198,255,0.2);
+    border-radius: 6px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>Generated Quiz Questions</h2>
+
+    {% for q in questions %}
+        <div class="question-box">
+            <h3>{{ loop.index }}. {{ q.question }}</h3>
+            <ul>
+                <li>A) {{ q.option_a }}</li>
+                <li>B) {{ q.option_b }}</li>
+                <li>C) {{ q.option_c }}</li>
+                <li>D) {{ q.option_d }}</li>
+            </ul>
+        </div>
+    {% endfor %}
+
+    <a href="{{ url_for('make_quiz') }}">
+        <button>Create Another Quiz</button>
+    </a>
+</div>
+
+</body>
+</html>

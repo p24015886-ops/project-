@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SciSparkQuiz | Games</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: radial-gradient(circle at top, #0b3c5d, #021726);
+            color: #ffffff;
+        }
+
+        /* ===== HEADER ===== */
+        .top-bar {
+            display: flex;
+            align-items: center;
+            padding: 20px 40px;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, #00eaff, #00bcd4);
+            color: #001a26;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .back-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .page-title {
+            margin-left: 30px;
+            font-size: 26px;
+            font-weight: 700;
+        }
+
+        /* ===== MAIN LAYOUT ===== */
+        .container {
+            padding: 30px 40px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(12px);
+        }
+
+        .step-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 25px;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+
+        /* ===== SETTINGS PANEL ===== */
+        .settings {
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 15px;
+            padding: 25px;
+        }
+
+        .setting-row {
+            margin-bottom: 18px;
+        }
+
+        .setting-row label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 6px;
+            color: #bfefff;
+        }
+
+        .setting-row select,
+        .setting-row input {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: none;
+            outline: none;
+            background: #022c43;
+            color: #ffffff;
+        }
+
+        .setting-row input[type="checkbox"] {
+            width: auto;
+            transform: scale(1.2);
+            margin-right: 8px;
+        }
+
+        /* ===== GAME PREVIEW ===== */
+        .preview {
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .preview img {
+            max-width: 100%;
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+
+        /* ===== ACTION BUTTONS ===== */
+        .actions {
+            margin-top: 25px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 26px;
+            border-radius: 25px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .btn-play {
+            background: linear-gradient(135deg, #00eaff, #00bcd4);
+            color: #001a26;
+        }
+
+        .btn-save {
+            background: transparent;
+            border: 2px solid #00eaff;
+            color: #00eaff;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 900px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- TOP BAR -->
+    <div class="top-bar">
+       <div class="back-btn" onclick="location.href='index.html'">
+    ⬅ Back
+</div>
+
+        <div class="page-title">Choose Settings & Play</div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="container">
+        <div class="card">
+            <div class="step-title">Quiz Wheel Game</div>
+
+            <div class="content-grid">
+
+                <!-- LEFT: SETTINGS -->
+              <form method="POST">
+
+    <div class="setting-row">
+        <label>Number of Rounds</label>
+        <select name="rounds">
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="8">8</option>
+        </select>
+    </div>
+
+    <div class="setting-row">
+        <label>Length of Time to Play</label>
+        <select name="duration">
+            <option value="10">10 Minutes</option>
+            <option value="20">20 Minutes</option>
+            <option value="30">30 Minutes</option>
+        </select>
+    </div>
+
+    <div class="setting-row">
+        <label>
+            <input type="checkbox" name="randomize" checked>
+            Randomize Questions
+        </label>
+    </div>
+
+    <div class="setting-row">
+        <label>Maximum Answer Choices</label>
+        <select name="max_choices">
+            <option value="2">2</option>
+            <option value="4">4</option>
+            <option value="6">6</option>
+        </select>
+    </div>
+
+    <div class="setting-row">
+        <label>When a team spins an X</label>
+        <select name="penalty">
+            <option value="Lose All Points">Lose All Points</option>
+            <option value="Lose Turn">Lose Turn</option>
+        </select>
+    </div>
+
+    <div class="actions">
+        <form method="POST" action="/save-game-settings">
+    <button class="btn btn-play" type="submit">▶ Play</button>
+</form>
+
+        <button class="btn btn-save" type="submit">💾 Save</button>
+    </div>
+
+</form>
+
+                <!-- RIGHT: PREVIEW -->
+                <div class="preview">
+                    <img src="https://i.imgur.com/8QfQ0ZB.png" alt="Game Preview">
+                    <p>Spin the wheel and answer questions to earn points!</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
