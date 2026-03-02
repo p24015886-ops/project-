@@ -4,37 +4,184 @@
 <meta charset="UTF-8">
 <title>SciSparkQuiz | Graviton</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+
 <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Poppins', sans-serif; background: radial-gradient(circle at top, #003a5f, #020b1a); color: white; height: 100vh; overflow: hidden; }
-    .container { display: flex; height: 100vh; }
-    .sidebar { width: 260px; background: linear-gradient(180deg, #051a30, #020b1a); padding: 25px; z-index: 5; border-right: 1px solid rgba(0, 229, 255, 0.1); flex-shrink: 0; }
-    .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 40px; }
-    .brand-title { font-family: 'Orbitron', sans-serif; color: #00e5ff; font-size: 20px; }
-    .menu-section { font-size: 10px; text-transform: uppercase; color: rgba(255,255,255,0.3); letter-spacing: 1px; margin: 20px 0 8px; padding: 0 4px; }
-    .menu a { display: block; padding: 12px 14px; margin-bottom: 8px; border-radius: 12px; text-decoration: none; color: #e0f7ff; background: rgba(255,255,255,0.05); transition: 0.3s; font-size: 14px; }
-    .menu a:hover, .menu a.active { background: rgba(0,229,255,0.25); transform: translateX(6px); color: #fff; }
-    .main { flex: 1; padding: 50px; position: relative; text-align: center; display: flex; flex-direction: column; justify-content: center; }
-    .hero h1 { font-family: 'Orbitron', sans-serif; font-size: 40px; margin-bottom: 10px; color: #00e5ff; }
-    .hero p { font-size: 16px; color: #bdefff; margin-bottom: 50px; }
-    .actions { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; }
-    .action-card { width: 280px; padding: 30px; background: rgba(255,255,255,0.06); border-radius: 25px; box-shadow: 0 0 35px rgba(0,229,255,0.1); transition: 0.3s; border: 1px solid rgba(255,255,255,0.1); }
-    .action-card:hover { transform: translateY(-5px); border-color: #00e5ff; box-shadow: 0 0 40px rgba(0,229,255,0.2); }
-    .action-card .icon { font-size: 36px; margin-bottom: 12px; }
-    .action-card h2 { font-family: 'Orbitron', sans-serif; font-size: 18px; margin-bottom: 12px; }
-    .action-card p { font-size: 13px; color: #9adfff; margin-bottom: 0; }
-    .action-card button { margin-top: 20px; width: 100%; padding: 12px; border-radius: 30px; border: none; background: #00e5ff; font-weight: 600; cursor: pointer; color: #020b1a; font-family: 'Poppins', sans-serif; transition: 0.3s; font-size: 14px; }
-    .action-card button:hover { background: #fff; box-shadow: 0 0 20px rgba(0,229,255,0.4); }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: radial-gradient(circle at top, #003a5f, #020b1a);
+    color: white;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+    width: 260px;
+    background: linear-gradient(180deg, #051a30, #020b1a);
+    padding: 25px;
+    border-right: 1px solid rgba(0, 229, 255, 0.1);
+    flex-shrink: 0;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 40px;
+}
+
+.logo-sidebar {
+    height: 40px;
+    width: auto;
+}
+
+.brand-title {
+    font-family: 'Orbitron', sans-serif;
+    color: #00e5ff;
+    font-size: 20px;
+}
+
+.menu-section {
+    font-size: 10px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 1px;
+    margin: 20px 0 8px;
+    padding: 0 4px;
+}
+
+.menu a {
+    display: block;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    border-radius: 12px;
+    text-decoration: none;
+    color: #e0f7ff;
+    background: rgba(255,255,255,0.05);
+    transition: 0.3s;
+    font-size: 14px;
+}
+
+.menu a:hover,
+.menu a.active {
+    background: rgba(0,229,255,0.25);
+    transform: translateX(6px);
+    color: #fff;
+}
+
+/* ===== MAIN ===== */
+.main {
+    flex: 1;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.logo-center {
+    height: 110px;
+    margin-bottom: 25px;
+    filter: drop-shadow(0 0 15px rgba(0,229,255,0.4));
+}
+
+.hero h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 40px;
+    margin-bottom: 10px;
+    color: #00e5ff;
+}
+
+.hero p {
+    font-size: 16px;
+    color: #bdefff;
+    margin-bottom: 50px;
+}
+
+/* ===== ACTION CARDS ===== */
+.actions {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.action-card {
+    width: 280px;
+    padding: 30px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 25px;
+    box-shadow: 0 0 35px rgba(0,229,255,0.1);
+    transition: 0.3s;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.action-card:hover {
+    transform: translateY(-5px);
+    border-color: #00e5ff;
+    box-shadow: 0 0 40px rgba(0,229,255,0.2);
+}
+
+.action-card .icon {
+    font-size: 36px;
+    margin-bottom: 12px;
+}
+
+.action-card h2 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 18px;
+    margin-bottom: 12px;
+}
+
+.action-card p {
+    font-size: 13px;
+    color: #9adfff;
+}
+
+.action-card button {
+    margin-top: 20px;
+    width: 100%;
+    padding: 12px;
+    border-radius: 30px;
+    border: none;
+    background: #00e5ff;
+    font-weight: 600;
+    cursor: pointer;
+    color: #020b1a;
+    font-family: 'Poppins', sans-serif;
+    transition: 0.3s;
+    font-size: 14px;
+}
+
+.action-card button:hover {
+    background: #fff;
+    box-shadow: 0 0 20px rgba(0,229,255,0.4);
+}
 </style>
 </head>
+
 <body>
 <div class="container">
 
+    <!-- ===== SIDEBAR ===== -->
     <div class="sidebar">
         <div class="brand">
+            <img src="{{ url_for('static', filename='images/company-logo.png') }}"
+                 class="logo-sidebar"
+                 alt="Company Logo">
             <div class="brand-title">GRAVITON</div>
         </div>
+
         <div class="menu">
             <div class="menu-section">Main</div>
             <a href="{{ url_for('home') }}" class="active">🏠 Home</a>
@@ -50,25 +197,38 @@
         </div>
     </div>
 
+    <!-- ===== MAIN CONTENT ===== -->
     <div class="main">
+
         <div class="hero">
+            <img src="{{ url_for('static', filename='images/company-logo.png') }}"
+                 class="logo-center"
+                 alt="Company Logo">
+
             <h1>SciSparkQuiz 🚀</h1>
             <p>Interactive science learning through quizzes, games, and workshops</p>
         </div>
-        
+
         <div class="actions">
+
             <div class="action-card">
                 <div class="icon">📝</div>
                 <h2>Take Quiz</h2>
                 <p>Challenge yourself with curated science questions from workshops.</p>
-                <button onclick="location.href='{{ url_for('category') }}'">Start Quiz</button>
+                <button onclick="location.href='{{ url_for('category') }}'">
+                    Start Quiz
+                </button>
             </div>
+
             <div class="action-card">
                 <div class="icon">🕹️</div>
                 <h2>Play Games</h2>
                 <p>Learn through interactive image-based games and competitions.</p>
-                <button onclick="location.href='{{ url_for('start_games') }}'">Start Games</button>
+                <button onclick="location.href='{{ url_for('start_games') }}'">
+                    Start Games
+                </button>
             </div>
+
         </div>
     </div>
 </div>
