@@ -5,56 +5,200 @@
 <title>Videos | SciSparkQuiz</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+
 <style>
-/* --- YOUR ORIGINAL CSS (UNCHANGED) --- */
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Poppins', sans-serif; background: radial-gradient(circle at top, #003a5f, #020b1a); color: white; height: 100vh; overflow: hidden; }
-.container { display: flex; height: 100vh; }
-.sidebar { width: 260px; background: linear-gradient(180deg, #051a30, #020b1a); padding: 25px; z-index: 5; border-right: 1px solid rgba(0, 229, 255, 0.1); }
-.brand { display: flex; align-items: center; gap: 12px; margin-bottom: 40px; }
-.brand img { width: 42px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 229, 255, 0.5); }
-.brand-title { font-family: 'Orbitron', sans-serif; color: #00e5ff; font-size: 20px; }
-.brand-sub { font-size: 11px; color: #9adfff; }
-.menu a { display: block; padding: 14px; margin-bottom: 12px; border-radius: 12px; text-decoration: none; color: #e0f7ff; background: rgba(255,255,255,0.05); transition: 0.3s; }
-.menu a:hover, .menu a.active { background: rgba(0,229,255,0.25); transform: translateX(6px); color: #fff; }
-.main { flex: 1; padding: 50px; overflow-y: auto; position: relative; }
-.header-section { margin-bottom: 40px; text-align: left; }
-.header-section h1 { font-family: 'Orbitron', sans-serif; font-size: 32px; color: #00e5ff; margin-bottom: 10px; }
-.header-section p { color: #bdefff; font-size: 16px; }
-.video-player-container { background: rgba(0, 0, 0, 0.4); border-radius: 20px; padding: 20px; border: 1px solid rgba(0, 229, 255, 0.2); margin-bottom: 40px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); }
-.video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; border-radius: 15px; overflow: hidden; }
-.video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-.video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
-.video-card { background: rgba(255,255,255,0.06); padding: 15px; border-radius: 18px; border: 1px solid rgba(255, 255, 255, 0.05); transition: 0.4s; cursor: pointer; }
-.video-card:hover { transform: translateY(-8px); background: rgba(0, 229, 255, 0.1); border-color: rgba(0, 229, 255, 0.3); box-shadow: 0 0 25px rgba(0, 229, 255, 0.2); }
-.thumbnail-placeholder { width: 100%; height: 150px; background: #051a30; border-radius: 12px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; font-size: 40px; }
-.video-card h3 { font-size: 18px; margin-bottom: 5px; color: #00e5ff; }
-.video-card p { font-size: 13px; color: #9adfff; }
-.back-btn { margin-top: 30px; display: inline-block; padding: 12px 28px; border-radius: 30px; background: rgba(0,229,255,0.15); border: 1px solid #00e5ff; cursor: pointer; color: #00e5ff; text-decoration: none; font-weight: 600; transition: 0.3s; }
-.back-btn:hover { background: #00e5ff; color: #020b1a; box-shadow: 0 0 20px rgba(0, 229, 255, 0.4); }
-.main::-webkit-scrollbar { width: 8px; }
-.main::-webkit-scrollbar-thumb { background: rgba(0, 229, 255, 0.2); border-radius: 10px; }
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+    font-family:'Poppins',sans-serif;
+    background:radial-gradient(circle at top,#003a5f,#020b1a);
+    color:white;
+    height:100vh;
+    overflow:hidden;
+}
+
+.container{display:flex;height:100vh;}
+
+/* SIDEBAR */
+.sidebar{
+    width:260px;
+    background:linear-gradient(180deg,#051a30,#020b1a);
+    padding:25px;
+    border-right:1px solid rgba(0,229,255,0.1);
+    flex-shrink:0;
+}
+
+.brand-title{
+    font-family:'Orbitron',sans-serif;
+    color:#00e5ff;
+    font-size:20px;
+    margin-bottom:40px;
+}
+
+.menu-section{
+    font-size:10px;
+    text-transform:uppercase;
+    color:rgba(255,255,255,0.3);
+    margin:20px 0 8px;
+}
+
+.menu a{
+    display:block;
+    padding:12px 14px;
+    margin-bottom:8px;
+    border-radius:12px;
+    text-decoration:none;
+    color:#e0f7ff;
+    background:rgba(255,255,255,0.05);
+    transition:0.3s;
+    font-size:14px;
+}
+
+.menu a:hover,
+.menu a.active{
+    background:rgba(0,229,255,0.25);
+    transform:translateX(6px);
+    color:#fff;
+}
+
+/* MAIN */
+.main{
+    flex:1;
+    padding:40px 50px;
+    overflow-y:auto;
+}
+
+.main::-webkit-scrollbar{width:8px;}
+.main::-webkit-scrollbar-thumb{
+    background:rgba(0,229,255,0.3);
+    border-radius:10px;
+}
+
+/* HEADER */
+.header-section h1{
+    font-family:'Orbitron',sans-serif;
+    font-size:32px;
+    color:#00e5ff;
+    margin-bottom:10px;
+}
+.header-section p{
+    color:#bdefff;
+    margin-bottom:30px;
+}
+
+/* FEATURED VIDEO */
+.video-player-container{
+    background:rgba(0,0,0,0.4);
+    border-radius:20px;
+    padding:20px;
+    border:1px solid rgba(0,229,255,0.2);
+    margin-bottom:40px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.5);
+}
+
+.video-wrapper{
+    position:relative;
+    padding-bottom:56.25%;
+    height:0;
+    border-radius:15px;
+    overflow:hidden;
+}
+
+.video-wrapper iframe{
+    position:absolute;
+    width:100%;
+    height:100%;
+    border:none;
+}
+
+#video-title{
+    margin-top:15px;
+    color:#00e5ff;
+    font-size:18px;
+}
+
+/* GRID */
+.video-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+    gap:25px;
+    padding-bottom:50px;
+}
+
+.video-card{
+    background:rgba(255,255,255,0.06);
+    padding:15px;
+    border-radius:18px;
+    border:1px solid rgba(255,255,255,0.05);
+    transition:0.4s;
+    cursor:pointer;
+}
+
+.video-card:hover{
+    transform:translateY(-8px);
+    background:rgba(0,229,255,0.12);
+    border-color:rgba(0,229,255,0.3);
+    box-shadow:0 0 25px rgba(0,229,255,0.2);
+}
+
+.thumbnail-placeholder{
+    width:100%;
+    height:150px;
+    background:#051a30;
+    border-radius:12px;
+    margin-bottom:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:40px;
+}
+
+.video-card h3{
+    font-size:18px;
+    color:#00e5ff;
+    margin-bottom:5px;
+}
+
+.video-card p{
+    font-size:13px;
+    color:#9adfff;
+    line-height:1.4;
+    height:36px;
+    overflow:hidden;
+}
+
+.video-tag{
+    display:inline-block;
+    margin-top:8px;
+    padding:4px 10px;
+    font-size:10px;
+    border-radius:6px;
+    background:rgba(0,229,255,0.2);
+    color:#00e5ff;
+    font-family:'Orbitron';
+    text-transform:uppercase;
+}
 </style>
 </head>
 
 <body>
+
 <div class="container">
 
 <div class="sidebar">
-    <div class="brand">
-        <img src="{{ url_for('static', filename='images/logoGRAVITON (1).png') }}">
-        <div>
-            <div class="brand-title">GRAVITON</div>
-            <div class="brand-sub">SciSparkQuiz</div>
-        </div>
-    </div>
-
+    <div class="brand-title">GRAVITON</div>
     <div class="menu">
-        <a href="{{ url_for('home') }}">Home</a>
-        <a href="{{ url_for('make_quiz') }}">Create Quiz</a>
-        <a href="{{ url_for('games') }}">Games</a>
-        <a href="{{ url_for('videos') }}" class="active">Videos</a>
-        <a href="{{ url_for('category') }}">Categories</a>
+        <div class="menu-section">Main</div>
+        <a href="{{ url_for('home') }}">🏠 Home</a>
+        <a href="{{ url_for('videos') }}" class="active">📹 Videos</a>
+
+        <div class="menu-section">Staff</div>
+        <a href="{{ url_for('make_quiz') }}">📝 Create Quiz</a>
+        <a href="{{ url_for('games') }}">🎮 Create Game</a>
+
+        <div class="menu-section">Students</div>
+        <a href="{{ url_for('category') }}">🚀 Start Quiz</a>
+        <a href="{{ url_for('start_games') }}">🕹️ Start Games</a>
     </div>
 </div>
 
@@ -62,66 +206,74 @@ body { font-family: 'Poppins', sans-serif; background: radial-gradient(circle at
 
 <div class="header-section">
     <h1>Workshop Videos 📺</h1>
-    <p>Watch guided science experiments and learn the principles behind them.</p>
+    <p>Select a video and start learning.</p>
 </div>
 
-<!-- FEATURED VIDEO -->
 <div class="video-player-container">
     <div class="video-wrapper">
         <iframe id="main-video"
         src="https://www.youtube.com/embed/TKM0P3XlMNA"
         allowfullscreen></iframe>
     </div>
-    <div style="margin-top: 15px;">
-        <h2 id="video-title" style="font-size: 20px; color: #00e5ff;">
-            Now Playing: Video 1
-        </h2>
-    </div>
+    <h3 id="video-title">Now Playing: Newton's Laws of Motion</h3>
 </div>
 
-<!-- VIDEO GRID -->
 <div class="video-grid">
 
-    <div class="video-card"
-    onclick="changeVideo('https://www.youtube.com/embed/TKM0P3XlMNA','Video 1')">
-        <div class="thumbnail-placeholder">🎬</div>
-        <h3>Video 1</h3>
-        <p>Workshop learning session.</p>
-    </div>
+<!-- ALL 28 VIDEOS -->
+<script>
+const videos = [
+["⚡","Laws of Motion","Exploring the three laws of classical mechanics.","Physics","https://www.youtube.com/embed/TKM0P3XlMNA"],
+["🔌","Static Electricity","Understanding electric charges and fields.","Physics","https://www.youtube.com/embed/Px1wnARs12Q"],
+["⚙️","Simple Machines","How levers and pulleys work.","Physics","https://www.youtube.com/embed/Pj-h6W98nJw"],
+["🔊","Science of Sound","How vibrations travel.","Physics","https://www.youtube.com/embed/yv_Yp09M6pI"],
+["🔦","Light & Optics","Reflection and refraction.","Physics","https://www.youtube.com/embed/S9V0_TIdH6U"],
+["🧲","Magnetism","Magnetic fields explained.","Physics","https://www.youtube.com/embed/vO89W9_vRGo"],
+["🪐","Gravity","Why planets orbit.","Physics","https://www.youtube.com/embed/rL8X2afJIMc"],
+["🧪","Chemical Reactions","Endo & Exothermic.","Chemistry","https://www.youtube.com/embed/-w6oW1ut4Dw"],
+["⚗️","Periodic Table","Elements explained.","Chemistry","https://www.youtube.com/embed/iIJD8RNLpS0"],
+["🍋","Acids & Bases","pH scale.","Chemistry","https://www.youtube.com/embed/HAPc6JH85pM"],
+["🧊","States of Matter","Solid liquid gas plasma.","Chemistry","https://www.youtube.com/embed/v6W_YpPrjV4"],
+["⚛️","Atoms & Molecules","Structure of matter.","Chemistry","https://www.youtube.com/embed/R1RMV5qhwyE"],
+["🥣","Mixtures","Types of solutions.","Chemistry","https://www.youtube.com/embed/uS7zfeK4OTQ"],
+["🔋","Electrochemistry","Batteries.","Chemistry","https://www.youtube.com/embed/X9L-9_X9u0c"],
+["🧬","Cell Structure","Cells explained.","Biology","https://www.youtube.com/embed/URUJD5NEXC8"],
+["🍎","Human Body","Digestive system.","Biology","https://www.youtube.com/embed/4GZ3D2Vdf_o"],
+["🍃","Photosynthesis","Plant food.","Biology","https://www.youtube.com/embed/D1Z-S7S_vS0"],
+["❤️","Circulatory System","Heart & blood.","Biology","https://www.youtube.com/embed/fAivpC974w4"],
+["🌍","Ecosystems","Food webs.","Biology","https://www.youtube.com/embed/C_9O022K6F4"],
+["🌻","Plant Anatomy","Roots & stems.","Biology","https://www.youtube.com/embed/V6b6_r4Z6I0"],
+["🧬","DNA Basics","Genetics.","Biology","https://www.youtube.com/embed/_IGXn0nQj_w"],
+["🔍","Scientific Method","Steps of science.","General","https://www.youtube.com/embed/6_9C96kY380"],
+["☀️","Solar System","Planets.","General","https://www.youtube.com/embed/jgfV_9999oM"],
+["☁️","Water Cycle","Evaporation.","General","https://www.youtube.com/embed/al-do-HGuIk"],
+["🌋","Earth Layers","Crust to core.","General","https://www.youtube.com/embed/Xp0h5Y19j_E"],
+["🌦️","Weather Science","Climate.","General","https://www.youtube.com/embed/4_GZ3_G_3_0"],
+["⚡","Renewable Energy","Energy sources.","General","https://www.youtube.com/embed/7_4_7_4_7_4"],
+["🥽","Lab Safety","Science safety.","General","https://www.youtube.com/embed/fAivpC9_A_I"]
+];
 
-    <div class="video-card"
-    onclick="changeVideo('https://www.youtube.com/embed/Px1wnARs12Q','Video 2')">
-        <div class="thumbnail-placeholder">🎬</div>
-        <h3>Video 2</h3>
-        <p>Workshop learning session.</p>
-    </div>
-
-    <div class="video-card"
-    onclick="changeVideo('https://www.youtube.com/embed/-w6oW1ut4Dw','Video 3')">
-        <div class="thumbnail-placeholder">🎬</div>
-        <h3>Video 3</h3>
-        <p>Workshop learning session.</p>
-    </div>
-
-    <div class="video-card"
-    onclick="changeVideo('https://www.youtube.com/embed/iIJD8RNLpS0','Video 4')">
-        <div class="thumbnail-placeholder">🎬</div>
-        <h3>Video 4</h3>
-        <p>Workshop learning session.</p>
-    </div>
+const grid=document.currentScript.parentElement;
+videos.forEach(v=>{
+grid.innerHTML+=`
+<div class="video-card" onclick="changeVideo('${v[4]}','${v[1]}')">
+<div class="thumbnail-placeholder">${v[0]}</div>
+<h3>${v[1]}</h3>
+<p>${v[2]}</p>
+<span class="video-tag">${v[3]}</span>
+</div>`;
+});
+</script>
 
 </div>
-
-<a href="{{ url_for('home') }}" class="back-btn">⬅ Back to Home</a>
-
 </div>
 </div>
 
 <script>
-function changeVideo(url, title) {
-    document.getElementById('main-video').src = url;
-    document.getElementById('video-title').innerText = "Now Playing: " + title;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+function changeVideo(url,title){
+document.getElementById('main-video').src=url;
+document.getElementById('video-title').innerText="Now Playing: "+title;
+window.scrollTo({top:0,behavior:'smooth'});
 }
 </script>
 

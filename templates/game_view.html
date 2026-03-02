@@ -1,259 +1,370 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>SciSparkQuiz | Games</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SciSpark | Start Games</title>
 
-    <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        body {
-            min-height: 100vh;
-            background: radial-gradient(circle at top, #0b3c5d, #021726);
-            color: #ffffff;
-        }
-
-        /* ===== HEADER ===== */
-        .top-bar {
-            display: flex;
-            align-items: center;
-            padding: 20px 40px;
-        }
-
-        .back-btn {
-            background: linear-gradient(135deg, #00eaff, #00bcd4);
-            color: #001a26;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 25px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .back-btn:hover {
-            transform: scale(1.05);
-        }
-
-        .page-title {
-            margin-left: 30px;
-            font-size: 26px;
-            font-weight: 700;
-        }
-
-        /* ===== MAIN LAYOUT ===== */
-        .container {
-            padding: 30px 40px;
-        }
-
-        .card {
-            background: rgba(255, 255, 255, 0.06);
-            border-radius: 20px;
-            padding: 30px;
-            backdrop-filter: blur(12px);
-        }
-
-        .step-title {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 25px;
-        }
-
-        .content-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 30px;
-        }
-
-        /* ===== SETTINGS PANEL ===== */
-        .settings {
-            background: rgba(0, 0, 0, 0.25);
-            border-radius: 15px;
-            padding: 25px;
-        }
-
-        .setting-row {
-            margin-bottom: 18px;
-        }
-
-        .setting-row label {
-            display: block;
-            font-size: 14px;
-            margin-bottom: 6px;
-            color: #bfefff;
-        }
-
-        .setting-row select,
-        .setting-row input {
-            width: 100%;
-            padding: 10px 12px;
-            border-radius: 10px;
-            border: none;
-            outline: none;
-            background: #022c43;
-            color: #ffffff;
-        }
-
-        .setting-row input[type="checkbox"] {
-            width: auto;
-            transform: scale(1.2);
-            margin-right: 8px;
-        }
-
-        /* ===== GAME PREVIEW ===== */
-        .preview {
-            background: rgba(0, 0, 0, 0.25);
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .preview img {
-            max-width: 100%;
-            border-radius: 12px;
-            margin-bottom: 15px;
-        }
-
-        /* ===== ACTION BUTTONS ===== */
-        .actions {
-            margin-top: 25px;
-            display: flex;
-            gap: 15px;
-        }
-
-        .btn {
-            padding: 12px 26px;
-            border-radius: 25px;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            transition: 0.3s;
-        }
-
-        .btn-play {
-            background: linear-gradient(135deg, #00eaff, #00bcd4);
-            color: #001a26;
-        }
-
-        .btn-save {
-            background: transparent;
-            border: 2px solid #00eaff;
-            color: #00eaff;
-        }
-
-        .btn:hover {
-            transform: scale(1.05);
-        }
-
-        @media (max-width: 900px) {
-            .content-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+<style>
+body {
+    font-family: 'Poppins', sans-serif;
+    background: radial-gradient(circle at top, #003a5f, #020b1a);
+    color: white;
+    min-height: 100vh;
+}
+.glass {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+select, input {
+    background: #051a30;
+    border: 1px solid rgba(255,255,255,0.15);
+    color: white;
+}
+select:focus { outline: none; border-color: #00e5ff; }
+.option-btn {
+    background: #05263f;
+    padding: 14px 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.25s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid rgba(0,229,255,0.1);
+}
+.option-btn:hover { background: rgba(0,229,255,0.2); border-color: #00e5ff; transform: translateX(4px); }
+.option-btn.correct  { background: rgba(0,200,83,0.25)  !important; border-color: #00c853 !important; }
+.option-btn.wrong    { background: rgba(213,0,0,0.25)    !important; border-color: #d50000 !important; }
+.option-btn.revealed { background: rgba(0,200,83,0.15)  !important; border-color: #00c853 !important; }
+.opt-label {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: rgba(0,229,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: bold; font-size: 13px;
+    flex-shrink: 0;
+}
+</style>
 </head>
 
-<body>
+<body class="p-6">
 
-    <!-- TOP BAR -->
-    <div class="top-bar">
-       <div class="back-btn" onclick="location.href='index.html'">
-    ⬅ Back
+<!-- Header -->
+<div class="flex justify-between items-center mb-6">
+    <button onclick="location.href='/'" class="bg-white/10 hover:bg-white/20 px-4 py-2 rounded text-sm">
+        ← Home
+    </button>
+    <h1 class="text-2xl font-bold text-cyan-400">🕹️ Start Games</h1>
+    <div id="scoreBoard" class="text-cyan-300 font-bold">Score: 0</div>
 </div>
 
-        <div class="page-title">Choose Settings & Play</div>
+<!-- ================= SETUP SCREEN ================= -->
+<div id="setupScreen" class="glass p-6 rounded-xl max-w-xl mx-auto space-y-4">
+
+    <h2 class="text-cyan-400 font-bold text-center mb-2">Select Game</h2>
+
+    <select id="setupCategory" class="w-full p-3 rounded" onchange="loadGames()">
+        <option value="">Select Category</option>
+        <option>Physics</option>
+        <option>Chemistry</option>
+        <option>Biology</option>
+        <option>Technology</option>
+        <option>General Science</option>
+    </select>
+
+    <select id="setupLevel" class="w-full p-3 rounded" onchange="loadGames()">
+        <option value="">Select Level</option>
+        <option>Upper Primary</option>
+        <option>Lower Primary</option>
+        <option>Upper Secondary</option>
+        <option>Lower Secondary</option>
+    </select>
+
+    <div id="loadingGames" class="text-center text-cyan-300 text-sm hidden">⏳ Loading games...</div>
+
+    <select id="gameSelect" class="w-full p-3 rounded" disabled>
+        <option value="" disabled selected>-- Select Category & Level First --</option>
+    </select>
+
+    <div id="noGamesMsg" class="text-red-400 text-sm text-center hidden">
+        No games found for this selection. Please create a game first.
     </div>
 
-    <!-- MAIN CONTENT -->
-    <div class="container">
-        <div class="card">
-            <div class="step-title">Quiz Wheel Game</div>
+    <button onclick="startGame()" id="startBtn"
+        class="w-full bg-cyan-400 text-black py-3 rounded font-bold hover:bg-cyan-300 transition disabled:opacity-40 disabled:cursor-not-allowed"
+        disabled>
+        ▶ Start Game
+    </button>
 
-            <div class="content-grid">
+</div>
 
-                <!-- LEFT: SETTINGS -->
-              <form method="POST">
+<!-- ================= GAME SCREEN ================= -->
+<div id="gameScreen" class="hidden max-w-3xl mx-auto">
 
-    <div class="setting-row">
-        <label>Number of Rounds</label>
-        <select name="rounds">
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="8">8</option>
-        </select>
-    </div>
+    <div class="glass p-6 rounded-xl">
 
-    <div class="setting-row">
-        <label>Length of Time to Play</label>
-        <select name="duration">
-            <option value="10">10 Minutes</option>
-            <option value="20">20 Minutes</option>
-            <option value="30">30 Minutes</option>
-        </select>
-    </div>
-
-    <div class="setting-row">
-        <label>
-            <input type="checkbox" name="randomize" checked>
-            Randomize Questions
-        </label>
-    </div>
-
-    <div class="setting-row">
-        <label>Maximum Answer Choices</label>
-        <select name="max_choices">
-            <option value="2">2</option>
-            <option value="4">4</option>
-            <option value="6">6</option>
-        </select>
-    </div>
-
-    <div class="setting-row">
-        <label>When a team spins an X</label>
-        <select name="penalty">
-            <option value="Lose All Points">Lose All Points</option>
-            <option value="Lose Turn">Lose Turn</option>
-        </select>
-    </div>
-
-    <div class="actions">
-        <form method="POST" action="/save-game-settings">
-    <button class="btn btn-play" type="submit">▶ Play</button>
-</form>
-
-        <button class="btn btn-save" type="submit">💾 Save</button>
-    </div>
-
-</form>
-
-                <!-- RIGHT: PREVIEW -->
-                <div class="preview">
-                    <img src="https://i.imgur.com/8QfQ0ZB.png" alt="Game Preview">
-                    <p>Spin the wheel and answer questions to earn points!</p>
-                </div>
-
-            </div>
+        <!-- Question header -->
+        <div class="flex justify-between items-center mb-3">
+            <div id="questionNumber" class="text-cyan-300 text-sm font-bold"></div>
+            <div id="timerDisplay" class="text-yellow-400 font-bold text-lg"></div>
         </div>
+
+        <!-- Progress bar -->
+        <div class="w-full bg-white/10 rounded-full h-1.5 mb-5">
+            <div id="progressBar" class="h-1.5 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 transition-all duration-400" style="width:0%"></div>
+        </div>
+
+        <!-- Question image (for projector games) -->
+        <img id="questionImage" class="mb-5 rounded-xl max-h-64 mx-auto hidden shadow-lg border border-white/10">
+
+        <!-- Question text -->
+        <h2 id="questionText" class="text-xl mb-5 font-medium leading-relaxed"></h2>
+
+        <!-- Options -->
+        <div id="options" class="space-y-3"></div>
+
+        <!-- Feedback -->
+        <div id="feedback" class="mt-4 font-bold text-center text-lg min-h-8"></div>
+
+        <!-- Navigation -->
+        <div class="flex justify-between mt-6">
+            <button onclick="prevQuestion()" class="bg-white/10 hover:bg-white/20 px-5 py-2 rounded font-bold">
+                ← Previous
+            </button>
+            <button onclick="revealAnswer()" id="revealBtn"
+                class="bg-yellow-400 text-black px-5 py-2 rounded font-bold hover:bg-yellow-300 transition">
+                👁 Show Answer
+            </button>
+            <button onclick="nextQuestion()" class="bg-cyan-400 text-black px-5 py-2 rounded font-bold hover:bg-cyan-300 transition">
+                Next →
+            </button>
+        </div>
+
     </div>
+
+</div>
+
+<!-- ================= FINAL SCREEN ================= -->
+<div id="finalScreen" class="hidden text-center mt-16">
+    <div class="glass p-10 rounded-2xl max-w-md mx-auto">
+        <div class="text-6xl mb-4">🏆</div>
+        <h2 id="finalScore" class="text-3xl text-cyan-400 font-bold mb-3"></h2>
+        <p id="performanceMessage" class="text-lg mb-8 text-white/80"></p>
+
+        <button onclick="location.reload()"
+            class="bg-cyan-400 text-black px-8 py-3 rounded-full font-bold hover:bg-cyan-300 transition">
+            Play Again
+        </button>
+    </div>
+</div>
+
+<script>
+
+let questions    = [];
+let currentIndex = 0;
+let score        = 0;
+let timerInterval = null;
+let timeRemaining = 0;
+let answered     = [];
+
+/* ================= LOAD GAMES DROPDOWN ================= */
+async function loadGames() {
+    const category = document.getElementById("setupCategory").value;
+    const level    = document.getElementById("setupLevel").value;
+
+    if (!category || !level) return;
+
+    const gameSelect  = document.getElementById("gameSelect");
+    const loadingEl   = document.getElementById("loadingGames");
+    const noGamesMsg  = document.getElementById("noGamesMsg");
+    const startBtn    = document.getElementById("startBtn");
+
+    gameSelect.innerHTML = '<option value="" disabled selected>Loading...</option>';
+    gameSelect.disabled  = true;
+    startBtn.disabled    = true;
+    noGamesMsg.classList.add("hidden");
+    loadingEl.classList.remove("hidden");
+
+    try {
+        const res  = await fetch(`/get-games/${encodeURIComponent(category)}?level=${encodeURIComponent(level)}`);
+        const data = await res.json();
+
+        loadingEl.classList.add("hidden");
+
+        if (data.length === 0) {
+            gameSelect.innerHTML = '<option value="" disabled selected>No games found</option>';
+            noGamesMsg.classList.remove("hidden");
+            return;
+        }
+
+        gameSelect.innerHTML = '<option value="" disabled selected>-- Select a Game --</option>';
+        data.forEach(g => {
+            const opt = document.createElement("option");
+            opt.value = g.id;
+            opt.textContent = g.title;
+            gameSelect.appendChild(opt);
+        });
+
+        gameSelect.disabled = false;
+        gameSelect.addEventListener("change", () => {
+            startBtn.disabled = !gameSelect.value;
+        }, { once: false });
+
+    } catch(e) {
+        loadingEl.classList.add("hidden");
+        gameSelect.innerHTML = '<option disabled>Error loading games</option>';
+    }
+}
+
+/* ================= START GAME ================= */
+async function startGame() {
+    const category   = document.getElementById("setupCategory").value;
+    const level      = document.getElementById("setupLevel").value;
+    const workshopId = document.getElementById("gameSelect").value;
+
+    if (!workshopId) { alert("Please select a game."); return; }
+
+    const url = `/api/game-questions?category=${encodeURIComponent(category)}&level=${encodeURIComponent(level)}&workshop_id=${workshopId}`;
+    const response = await fetch(url);
+    questions = await response.json();
+
+    if (questions.length === 0) {
+        alert("No questions available for this game.");
+        return;
+    }
+
+    currentIndex = 0;
+    score        = 0;
+    answered     = new Array(questions.length).fill(false);
+
+    document.getElementById("setupScreen").classList.add("hidden");
+    document.getElementById("gameScreen").classList.remove("hidden");
+    updateScore();
+    showQuestion();
+}
+
+/* ================= SHOW QUESTION ================= */
+function showQuestion() {
+    const q = questions[currentIndex];
+
+    document.getElementById("questionNumber").innerText =
+        `Question ${currentIndex + 1} / ${questions.length}`;
+
+    const progress = ((currentIndex + 1) / questions.length) * 100;
+    document.getElementById("progressBar").style.width = progress + '%';
+
+    document.getElementById("questionText").innerText = q.question;
+    document.getElementById("feedback").innerText = "";
+    document.getElementById("revealBtn").style.display = "inline-block";
+
+    const img = document.getElementById("questionImage");
+    if (q.question_image) {
+        img.src = q.question_image;
+        img.classList.remove("hidden");
+    } else {
+        img.classList.add("hidden");
+    }
+
+    const optionsDiv = document.getElementById("options");
+    optionsDiv.innerHTML = "";
+
+    ["A","B","C","D"].forEach(letter => {
+        const optText = q["option_" + letter.toLowerCase()];
+        if (!optText) return;
+
+        const div = document.createElement("div");
+        div.className = "option-btn";
+        div.id        = "opt_" + letter;
+        div.innerHTML = `<div class="opt-label">${letter}</div><span>${optText}</span>`;
+        div.onclick   = () => selectAnswer(letter, div);
+        optionsDiv.appendChild(div);
+    });
+}
+
+/* ================= SELECT ANSWER ================= */
+function selectAnswer(letter, element) {
+    if (answered[currentIndex]) return;
+
+    const correct = questions[currentIndex].correct_answer;
+    answered[currentIndex] = true;
+
+    const isCorrect = (letter === correct);
+    if (isCorrect) {
+        element.classList.add("correct");
+        score++;
+        document.getElementById("feedback").innerHTML = '<span style="color:#00c853">🎉 Correct! Brilliant!</span>';
+    } else {
+        element.classList.add("wrong");
+        document.getElementById("feedback").innerHTML = '<span style="color:#ff5252">💪 Not correct! Keep trying!</span>';
+        // Highlight correct answer
+        const correctEl = document.getElementById("opt_" + correct);
+        if (correctEl) correctEl.classList.add("revealed");
+    }
+
+    // Disable all options
+    document.querySelectorAll(".option-btn").forEach(o => o.onclick = null);
+    updateScore();
+}
+
+/* ================= REVEAL ANSWER (staff button) ================= */
+function revealAnswer() {
+    if (!questions[currentIndex]) return;
+    const correct = questions[currentIndex].correct_answer;
+    const el = document.getElementById("opt_" + correct);
+    if (el) {
+        el.classList.add("revealed");
+        document.getElementById("feedback").innerHTML = `<span style="color:#00c853">✅ Answer: ${correct}</span>`;
+    }
+    answered[currentIndex] = true;
+    document.querySelectorAll(".option-btn").forEach(o => o.onclick = null);
+    document.getElementById("revealBtn").style.display = "none";
+}
+
+/* ================= NAVIGATION ================= */
+function nextQuestion() {
+    if (currentIndex < questions.length - 1) {
+        currentIndex++;
+        showQuestion();
+    } else {
+        endGame();
+    }
+}
+
+function prevQuestion() {
+    if (currentIndex > 0) {
+        currentIndex--;
+        showQuestion();
+    }
+}
+
+/* ================= SCORE ================= */
+function updateScore() {
+    document.getElementById("scoreBoard").innerText = "Score: " + score;
+}
+
+/* ================= END GAME ================= */
+function endGame() {
+    clearInterval(timerInterval);
+    document.getElementById("gameScreen").classList.add("hidden");
+    document.getElementById("finalScreen").classList.remove("hidden");
+
+    const percent = (score / questions.length) * 100;
+    document.getElementById("finalScore").innerText = `Score: ${score} / ${questions.length}`;
+
+    let msg = "";
+    if (percent === 100)    msg = "🏆 Planet Master! Perfect Score!";
+    else if (percent >= 70) msg = "🌟 Great Job, Explorer!";
+    else if (percent >= 40) msg = "🚀 Good Try, Space Cadet!";
+    else                    msg = "🌌 Keep Learning — You'll Get There!";
+
+    document.getElementById("performanceMessage").innerText = msg;
+}
+
+</script>
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-

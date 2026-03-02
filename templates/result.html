@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Quiz Result | SciSparkQuiz</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Poppins', sans-serif;
+    background: radial-gradient(circle at top, #003a5f, #020b1a);
+    color: white;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.result-card {
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(0,229,255,0.2);
+    border-radius: 25px;
+    padding: 60px 50px;
+    text-align: center;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.trophy { font-size: 72px; margin-bottom: 20px; }
+h1 {
+    font-family: 'Orbitron', sans-serif;
+    color: #00e5ff;
+    font-size: 26px;
+    margin-bottom: 30px;
+}
+.score-display {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 54px;
+    color: #00e5ff;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 8px;
+}
+.score-total {
+    color: rgba(255,255,255,0.5);
+    font-size: 18px;
+    margin-bottom: 25px;
+}
+.progress-bg {
+    background: rgba(255,255,255,0.1);
+    border-radius: 50px;
+    height: 10px;
+    margin-bottom: 25px;
+    overflow: hidden;
+}
+.progress-fill {
+    height: 100%;
+    border-radius: 50px;
+    background: linear-gradient(90deg, #00e5ff, #0080ff);
+    transition: width 1s ease;
+}
+.message {
+    font-size: 20px;
+    margin-bottom: 35px;
+    color: #e0f7ff;
+}
+.percentage-badge {
+    display: inline-block;
+    background: rgba(0,229,255,0.15);
+    border: 1px solid rgba(0,229,255,0.3);
+    border-radius: 20px;
+    padding: 6px 20px;
+    font-family: 'Orbitron', sans-serif;
+    color: #00e5ff;
+    font-size: 14px;
+    margin-bottom: 30px;
+}
+.btn-group { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+.btn {
+    padding: 13px 28px;
+    border-radius: 30px;
+    border: none;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 14px;
+    text-decoration: none;
+    display: inline-block;
+}
+.btn-primary { background: #00e5ff; color: #020b1a; }
+.btn-primary:hover { background: #fff; box-shadow: 0 0 20px rgba(0,229,255,0.4); }
+.btn-secondary { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); }
+.btn-secondary:hover { background: rgba(255,255,255,0.2); }
+</style>
+</head>
+<body>
+
+<div class="result-card">
+    {% if percentage == 100 %}
+        <div class="trophy">🏆</div>
+    {% elif percentage >= 70 %}
+        <div class="trophy">🌟</div>
+    {% elif percentage >= 40 %}
+        <div class="trophy">🚀</div>
+    {% else %}
+        <div class="trophy">💪</div>
+    {% endif %}
+
+    <h1>Quiz Complete!</h1>
+
+    <div class="score-display">{{ score }}</div>
+    <div class="score-total">out of {{ total }} questions</div>
+
+    <div class="percentage-badge">{{ percentage }}%</div>
+
+    <div class="progress-bg">
+        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+    </div>
+
+    <div class="message">
+        {% if percentage == 100 %}
+            🏆 Perfect Score! You're a Planet Master!
+        {% elif percentage >= 80 %}
+            🌟 Excellent Performance! Keep it up!
+        {% elif percentage >= 60 %}
+            👍 Good Job! Well done, Explorer!
+        {% elif percentage >= 40 %}
+            🚀 Good Try, Space Cadet!
+        {% else %}
+            🌌 Keep Practicing — You'll Get There!
+        {% endif %}
+    </div>
+
+    <div class="btn-group">
+        <a href="{{ url_for('category') }}" class="btn btn-primary">Take Another Quiz</a>
+        <a href="{{ url_for('home') }}" class="btn btn-secondary">← Home</a>
+    </div>
+</div>
+
+<script>
+    // Animate progress bar on load
+    setTimeout(() => {
+        document.getElementById("progressFill").style.width = "{{ percentage }}%";
+    }, 300);
+</script>
+
+</body>
+</html>

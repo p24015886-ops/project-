@@ -2,43 +2,295 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SciSparkQuiz | Game Play</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Poppins&display=swap" rel="stylesheet">
+<title>SciSpark | Create Game</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
 <style>
-    body { margin: 0; font-family: 'Poppins', sans-serif; background: radial-gradient(circle at top, #003a5f, #020b1a); color: white; }
-    .top-bar { display: flex; justify-content: space-between; padding: 20px 40px; }
-    .back-btn { background: #00e5ff; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; color: #020b1a; }
-    .container { max-width: 800px; margin: 40px auto; background: rgba(255,255,255,0.06); padding: 40px; border-radius: 25px; text-align: center; border: 1px solid rgba(0,229,255,0.3); }
-    .question { font-size: 24px; margin-bottom: 30px; min-height: 80px; }
-    .options { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    .option { background: rgba(0,229,255,0.1); padding: 20px; border-radius: 15px; cursor: pointer; transition: 0.3s; border: 1px solid rgba(0,229,255,0.2); }
-    .option:hover { background: rgba(0,229,255,0.3); }
-    .correct { background: #2ecc71 !important; border-color: #27ae60; }
-    .wrong { background: #e74c3c !important; border-color: #c0392b; }
-    .score-display { font-family: 'Orbitron', sans-serif; color: #00e5ff; font-size: 1.2rem; }
+body {
+    font-family: 'Poppins', sans-serif;
+    background: radial-gradient(circle at top, #003a5f, #020b1a);
+    color: white;
+    min-height: 100vh;
+}
+.glass {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+input, select, textarea {
+    background: #051a30;
+    border: 1px solid rgba(255,255,255,0.1);
+    color: white;
+}
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: #00e5ff;
+}
+.answer-btn.active { background: #00e5ff !important; color: black !important; }
 </style>
 </head>
-<body>
 
-<div class="top-bar">
-    <button class="back-btn" onclick="location.href='{{ url_for('games') }}'">⬅ Back</button>
-    <div class="score-display">Score: <span id="score">0</span></div>
+<body class="p-6">
+
+<!-- Top Nav -->
+<div class="flex items-center justify-between mb-8">
+    <button onclick="location.href='/'" class="bg-white/10 hover:bg-white/20 px-4 py-2 rounded text-sm">
+        ← Home
+    </button>
+    <h1 class="text-2xl font-bold text-cyan-400">🎮 Create Game</h1>
+    <a href="/start-games" class="bg-cyan-400 text-black px-4 py-2 rounded font-bold text-sm hover:bg-cyan-300 transition">
+        ▶ Start Games
+    </a>
 </div>
 
-<div class="container">
-    <div class="question" id="question">Initializing Laboratory...</div>
+<!-- Sidebar-style layout: left = settings, right = questions -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-    <div class="options">
-        <div class="option" onclick="checkAnswer('A')" id="A"></div>
-        <div class="option" onclick="checkAnswer('B')" id="B"></div>
-        <div class="option" onclick="checkAnswer('C')" id="C"></div>
-        <div class="option" onclick="checkAnswer('D')" id="D"></div>
+<!-- LEFT PANEL: Game Settings -->
+<div class="glass p-6 rounded-xl space-y-4">
+
+    <h2 class="text-cyan-400 font-bold text-lg mb-2">Game Settings</h2>
+
+    <input id="title" placeholder="Game Title" class="w-full p-3 rounded">
+
+    <select id="category" class="w-full p-3 rounded">
+        <option value="">Select Category</option>
+        <option>Physics</option>
+        <option>Chemistry</option>
+        <option>Biology</option>
+        <option>Technology</option>
+        <option>General Science</option>
+    </select>
+
+    <select id="level" class="w-full p-3 rounded">
+        <option value="">Select Level</option>
+        <option>Upper Primary</option>
+        <option>Lower Primary</option>
+        <option>Upper Secondary</option>
+        <option>Lower Secondary</option>
+    </select>
+
+    <select id="timeLimit" class="w-full p-3 rounded">
+        <option value="0">No Timer</option>
+        <option value="120">2 Minutes</option>
+        <option value="300">5 Minutes</option>
+        <option value="600">10 Minutes</option>
+    </select>
+
+    <textarea id="desc" placeholder="Game Description (optional)" class="w-full p-3 rounded h-20 resize-none"></textarea>
+
+    <!-- JSON Upload -->
+    <div>
+        <label class="text-sm text-cyan-300 block mb-1">Upload Questions (JSON)</label>
+        <input type="file" id="json-upload" accept=".json" class="w-full text-sm">
+        <p class="text-xs text-white/40 mt-1">Same format as quiz JSON</p>
     </div>
+
+    <button id="publish-btn" class="w-full bg-cyan-400 text-black py-3 rounded font-bold hover:bg-cyan-300 transition">
+        Create Game
+    </button>
+
+    <div id="status" class="text-sm mt-2 text-center"></div>
+
+    <!-- Existing Games List -->
+    <div class="mt-6">
+        <h3 class="text-cyan-400 font-bold mb-3">Existing Games</h3>
+        {% if games %}
+            {% for game in games %}
+            <div class="glass p-3 rounded-lg mb-2 flex justify-between items-center">
+                <div>
+                    <div class="text-sm font-bold">{{ game.title }}</div>
+                    <div class="text-xs text-cyan-300">{{ game.category }} · {{ game.target_level }}</div>
+                </div>
+                <a href="/delete-game/{{ game.id }}" 
+                   onclick="return confirm('Delete this game?')"
+                   class="text-red-400 text-xs hover:text-red-300">Delete</a>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-white/40 text-sm">No games created yet.</p>
+        {% endif %}
+    </div>
+
 </div>
 
-<!-- Load the centralized game logic -->
-<script src="{{ url_for('static', filename='js/game.js') }}"></script>
+<!-- RIGHT PANEL: Questions -->
+<div class="lg:col-span-2">
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg text-cyan-400">Questions (<span id="count">0</span>)</h2>
+        <button onclick="addBlankQuestion()" class="bg-white/10 hover:bg-white/20 px-4 py-2 rounded text-sm">
+            + Add Question
+        </button>
+    </div>
+    <div id="questions"></div>
+</div>
+
+</div>
+
+<script>
+let questions = [];
+
+/* ================= JSON UPLOAD ================= */
+document.getElementById("json-upload").addEventListener("change", function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(event) {
+        try {
+            const json = JSON.parse(event.target.result);
+            let data = Array.isArray(json) ? json : (Array.isArray(json.questions) ? json.questions : null);
+
+            if (!data) { alert("Invalid JSON structure"); return; }
+
+            questions = data.map((q, i) => ({
+                id: Date.now() + i,
+                text: q.question || q.text || "",
+                a: q.a || q.option_a || "",
+                b: q.b || q.option_b || "",
+                c: q.c || q.option_c || "",
+                d: q.d || q.option_d || "",
+                answer: (q.answer || q.correct_answer || "A").toUpperCase(),
+                image: q.image || ""
+            }));
+
+            render();
+        } catch(err) {
+            alert("JSON Parse Error");
+        }
+    };
+    reader.readAsText(file);
+});
+
+/* ================= ADD BLANK QUESTION ================= */
+function addBlankQuestion() {
+    questions.push({
+        id: Date.now(),
+        text: "", a: "", b: "", c: "", d: "",
+        answer: "A", image: ""
+    });
+    render();
+    // Scroll to bottom
+    setTimeout(() => {
+        document.getElementById("questions").lastElementChild?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+}
+
+/* ================= RENDER ================= */
+function render() {
+    const container = document.getElementById("questions");
+    container.innerHTML = "";
+    document.getElementById("count").innerText = questions.length;
+
+    questions.forEach((q, index) => {
+        const card = document.createElement("div");
+        card.className = "glass p-4 rounded-xl mb-4";
+
+        card.innerHTML = `
+        <div class="flex justify-between items-center mb-3">
+            <span class="font-bold text-cyan-400">Q${index + 1}</span>
+            <button onclick="removeQ(${q.id})" class="text-red-400 text-sm hover:text-red-300">🗑 Delete</button>
+        </div>
+
+        <input value="${escHtml(q.text)}"
+            placeholder="Question text"
+            oninput="update(${q.id},'text',this.value)"
+            class="w-full p-2 mb-3 rounded">
+
+        <div class="mb-3">
+            <label class="text-xs text-cyan-300 block mb-1">Image URL (optional — for projector display)</label>
+            <input value="${escHtml(q.image || '')}"
+                placeholder="https://example.com/image.jpg"
+                oninput="update(${q.id},'image',this.value)"
+                class="w-full p-2 rounded">
+        </div>
+
+        ${["A","B","C","D"].map(opt => `
+        <div class="flex items-center gap-2 mb-2">
+            <button onclick="setAnswer(${q.id},'${opt}')"
+                class="answer-btn px-3 py-1 rounded font-bold text-sm bg-white/10 ${q.answer === opt ? 'active' : ''}">
+                ${opt}
+            </button>
+            <input value="${escHtml(q[opt.toLowerCase()])}"
+                placeholder="Option ${opt}"
+                oninput="update(${q.id},'${opt.toLowerCase()}',this.value)"
+                class="flex-1 p-2 rounded">
+        </div>
+        `).join("")}
+        <p class="text-xs text-white/40 mt-1">Click A/B/C/D to mark correct answer</p>
+        `;
+
+        container.appendChild(card);
+    });
+}
+
+function escHtml(str) {
+    return (str || '').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function update(id, field, value) {
+    const q = questions.find(q => q.id === id);
+    if (q) { q[field] = value; }
+}
+
+function setAnswer(id, answer) {
+    const q = questions.find(q => q.id === id);
+    if (q) { q.answer = answer; render(); }
+}
+
+function removeQ(id) {
+    questions = questions.filter(q => q.id !== id);
+    render();
+}
+
+/* ================= PUBLISH GAME ================= */
+document.getElementById("publish-btn").addEventListener("click", async function() {
+    const title       = document.getElementById("title").value.trim();
+    const category    = document.getElementById("category").value;
+    const level       = document.getElementById("level").value;
+    const description = document.getElementById("desc").value.trim();
+    const time_limit  = parseInt(document.getElementById("timeLimit").value);
+    const status      = document.getElementById("status");
+
+    if (!title || !category || !level || questions.length === 0) {
+        alert("Please fill in title, category, level and add at least one question.");
+        return;
+    }
+
+    status.innerHTML = "⏳ Creating game...";
+    this.disabled = true;
+
+    try {
+        const response = await fetch("/api/publish-game", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ title, description, category, level, time_limit, questions })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            status.innerHTML = "✅ Game Created Successfully!";
+            questions = [];
+            render();
+            document.getElementById("title").value = "";
+            document.getElementById("desc").value = "";
+            document.getElementById("category").value = "";
+            document.getElementById("level").value = "";
+            // Reload to show new game in list
+            setTimeout(() => location.reload(), 1500);
+        } else {
+            status.innerHTML = "❌ Failed: " + (result.error || "Unknown error");
+        }
+    } catch(error) {
+        status.innerHTML = "❌ Server error";
+    }
+
+    this.disabled = false;
+});
+</script>
 
 </body>
 </html>

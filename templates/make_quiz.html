@@ -1,127 +1,372 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Management Console | SciSparkQuiz</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Poppins&display=swap" rel="stylesheet">
-    <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{ font-family:Poppins,sans-serif; background:radial-gradient(circle at top,#003a5f,#020b1a); color:white; min-height:100vh; padding-bottom: 50px; }
-        .header{ padding:30px 60px; display:flex; align-items:center; justify-content: space-between; border-bottom: 1px solid rgba(0,229,255,0.2); }
-        .header h1{ font-family:Orbitron; color:#00e5ff; font-size: 24px; }
-        .container{ max-width:1100px; margin:40px auto; display: grid; grid-template-columns: 1fr 1.5fr; gap: 30px; padding: 0 20px; }
-        
-        .panel{ background:rgba(255,255,255,.05); backdrop-filter:blur(10px); padding:30px; border-radius:20px; border: 1px solid rgba(255,255,255,0.1); }
-        h2{ font-family: Orbitron; font-size: 18px; margin-bottom: 20px; color: #00e5ff; }
-        
-        label{ display:block; margin-top:15px; font-size: 13px; color: #9adfff; }
-        input, textarea, select{ width:100%; margin-top:8px; padding:12px; border-radius:10px; border:none; background: #051a30; color: white; font-size: 14px; }
-        
-        .btn{ padding:12px 24px; border-radius:10px; border:none; cursor:pointer; font-weight: bold; transition: 0.3s; margin-top: 20px; width: 100%; }
-        .btn-primary{ background:#00e5ff; color:#041424; }
-        .btn-primary:hover{ background: #00b8cc; }
-        .btn-outline{ background: transparent; border: 1px solid #ff4b2b; color: #ff4b2b; }
-        .btn-outline:hover{ background: #ff4b2b; color: white; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SciSpark | Create Quiz</title>
 
-        .workshop-item { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 12px; margin-bottom: 15px; border-left: 4px solid #00e5ff; }
-        .workshop-item h3 { font-size: 16px; }
-        .workshop-meta { font-size: 12px; color: #888; margin-top: 5px; }
-        .workshop-actions { margin-top: 10px; display: flex; gap: 10px; }
-        .action-link { font-size: 12px; text-decoration: none; color: #00e5ff; cursor: pointer; }
-        .delete-link { color: #ff4b2b; }
+<script src="https://cdn.tailwindcss.com"></script>
 
-        /* Modal simple style */
-        #qModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:100; justify-content:center; align-items:center; }
-        .modal-content { background:#051a30; padding:30px; border-radius:20px; width:500px; border:1px solid #00e5ff; }
-    </style>
+<style>
+body {
+    font-family: 'Poppins', sans-serif;
+    background: radial-gradient(circle at top, #003a5f, #020b1a);
+    color: white;
+    min-height: 100vh;
+}
+.glass {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+input, select, textarea {
+    background: #051a30;
+    border: 1px solid rgba(255,255,255,0.1);
+    color: white;
+}
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: #00e5ff;
+}
+.answer-btn { transition: 0.2s; }
+.answer-btn.active { background: #00e5ff !important; color: black !important; }
+</style>
 </head>
-<body>
 
-<div class="header">
-    <div style="display: flex; align-items: center; gap: 15px;">
-        <h1>⚛ SciSpark Manager</h1>
-    </div>
-    <button class="btn" style="width: auto; margin:0;" onclick="location.href='/'">Home</button>
+<body class="p-6">
+
+<!-- Top Nav -->
+<div class="flex items-center justify-between mb-8">
+    <button onclick="location.href='/'" class="bg-white/10 hover:bg-white/20 px-4 py-2 rounded text-sm">
+        ← Home
+    </button>
+    <h1 class="text-2xl font-bold text-cyan-400">📝 Create Quiz</h1>
+    <a href="/category" class="bg-cyan-400 text-black px-4 py-2 rounded font-bold text-sm hover:bg-cyan-300 transition">
+        ▶ Start Quiz
+    </a>
 </div>
 
-<div class="container">
-    <!-- CREATE SECTION -->
-    <div class="panel">
-        <h2>New Workshop</h2>
-        <form action="/create-workshop" method="POST">
-            <label>Workshop Title</label>
-            <input name="title" type="text" placeholder="e.g. Gravity Experiments" required>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-            <label>Description</label>
-            <textarea name="description" style="height: 80px;"></textarea>
+<!-- LEFT PANEL: Quiz Settings -->
+<div class="glass p-6 rounded-xl space-y-4">
 
-            <label>Level</label>
-            <select name="level">
-                <option value="lower_primary">Lower Primary</option>
-                <option value="upper_primary">Upper Primary</option>
-            </select>
+    <h2 class="text-cyan-400 font-bold text-lg mb-2">Quiz Settings</h2>
 
-            <button type="submit" class="btn btn-primary">Create Workshop</button>
-        </form>
+    <input id="title" placeholder="Workshop / Quiz Title" class="w-full p-3 rounded">
+
+    <select id="category" class="w-full p-3 rounded">
+        <option value="">Select Category</option>
+        <option>Physics</option>
+        <option>Chemistry</option>
+        <option>Biology</option>
+        <option>Technology</option>
+        <option>General Science</option>
+    </select>
+
+    <select id="level" class="w-full p-3 rounded">
+        <option value="">Select Level</option>
+        <option>Upper Primary</option>
+        <option>Lower Primary</option>
+        <option>Upper Secondary</option>
+        <option>Lower Secondary</option>
+    </select>
+
+    <textarea id="desc" placeholder="Description (optional)"
+        class="w-full p-3 rounded h-20 resize-none"></textarea>
+
+    <!-- JSON Upload -->
+    <div>
+        <label class="text-sm text-cyan-300 block mb-1">Upload Questions (JSON)</label>
+        <input type="file" id="json-upload" accept=".json" class="w-full text-sm">
+        <p class="text-xs text-white/40 mt-1">Format: [{question, a, b, c, d, answer}, ...]</p>
     </div>
 
-    <!-- LIST SECTION -->
-    <div class="panel">
-        <h2>Existing Workshops</h2>
-        {% for w in workshops %}
-        <div class="workshop-item">
-            <h3>{{ w.title }}</h3>
-            <div class="workshop-meta">{{ w.target_level }} | {{ w.category }}</div>
-            <div class="workshop-actions">
-                <span class="action-link" onclick="openQuestionModal('{{ w.id }}', '{{ w.title }}')">➕ Add Question</span>
-                <a href="/delete-workshop/{{ w.id }}" class="action-link delete-link" onclick="return confirm('Delete this workshop and all its questions?')">🗑 Delete</a>
+    <button id="publish-btn"
+        class="w-full bg-cyan-400 text-black py-3 rounded font-bold hover:bg-cyan-300 transition">
+        Publish Quiz
+    </button>
+
+    <div id="status" class="text-sm mt-2 text-center"></div>
+
+    <!-- Existing Workshops List -->
+    <div class="mt-6">
+        <h3 class="text-cyan-400 font-bold mb-3">Existing Quizzes</h3>
+        {% if workshops %}
+            {% for ws in workshops %}
+            <div class="glass p-3 rounded-lg mb-2">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="text-sm font-bold">{{ ws.title }}</div>
+                        <div class="text-xs text-cyan-300">{{ ws.category }} · {{ ws.target_level }}</div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="editWorkshop({{ ws.id }})"
+                            class="text-cyan-400 text-xs hover:text-cyan-200">Edit</button>
+                        <a href="/delete-workshop/{{ ws.id }}"
+                           onclick="return confirm('Delete this quiz?')"
+                           class="text-red-400 text-xs hover:text-red-300">Delete</a>
+                    </div>
+                </div>
             </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-white/40 text-sm">No quizzes created yet.</p>
+        {% endif %}
+    </div>
+
+</div>
+
+<!-- RIGHT PANEL: Questions Editor -->
+<div class="lg:col-span-2">
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg text-cyan-400">Questions (<span id="count">0</span>)</h2>
+        <button onclick="addBlankQuestion()"
+            class="bg-white/10 hover:bg-white/20 px-4 py-2 rounded text-sm">
+            + Add Question
+        </button>
+    </div>
+    <div id="questions"></div>
+</div>
+
+</div>
+
+<!-- Edit Modal -->
+<div id="editModal" class="hidden fixed inset-0 bg-black/70 backdrop-blur flex items-center justify-center z-50">
+    <div class="glass p-6 rounded-xl w-full max-w-lg">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-cyan-400 font-bold">Edit Quiz Questions</h3>
+            <button onclick="closeEdit()" class="text-white/60 hover:text-white">✕</button>
         </div>
-        {% endfor %}
-    </div>
-</div>
-
-<!-- Add Question Modal -->
-<div id="qModal">
-    <div class="modal-content">
-        <h2 id="modalTitle">Add Question</h2>
-        <form id="qForm" method="POST">
-            <label>Question Text</label>
-            <input name="question_text" required>
-            
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <div><label>Option A</label><input name="option_a" required></div>
-                <div><label>Option B</label><input name="option_b" required></div>
-                <div><label>Option C</label><input name="option_c" required></div>
-                <div><label>Option D</label><input name="option_d" required></div>
-            </div>
-
-            <label>Correct Answer (A/B/C/D)</label>
-            <select name="correct_answer">
-                <option value="A">A</option>
-                <option value="B">B</option>
-                <option value="C">C</option>
-                <option value="D">D</option>
-            </select>
-
-            <div style="display: flex; gap: 10px;">
-                <button type="button" class="btn btn-outline" onclick="closeModal()">Cancel</button>
-                <button type="submit" class="btn btn-primary">Save Question</button>
-            </div>
-        </form>
+        <div id="editQuestions" class="max-h-96 overflow-y-auto space-y-3"></div>
+        <button onclick="saveEdit()" class="w-full bg-cyan-400 text-black py-2 rounded font-bold mt-4 hover:bg-cyan-300 transition">
+            Save Changes
+        </button>
+        <div id="editStatus" class="text-sm text-center mt-2"></div>
     </div>
 </div>
 
 <script>
-    function openQuestionModal(id, title) {
-        document.getElementById('qModal').style.display = 'flex';
-        document.getElementById('modalTitle').innerText = "Add Question to: " + title;
-        document.getElementById('qForm').action = "/add-question/" + id;
+let questions = [];
+let editWorkshopId = null;
+let editQuestionsData = [];
+
+/* ================= JSON UPLOAD ================= */
+document.getElementById("json-upload").addEventListener("change", function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(event) {
+        try {
+            const json = JSON.parse(event.target.result);
+            let data = Array.isArray(json) ? json : (Array.isArray(json.questions) ? json.questions : null);
+            if (!data) { alert("Invalid JSON structure"); return; }
+
+            questions = data.map((q, i) => ({
+                id: Date.now() + i,
+                text: q.question || q.text || "",
+                a: q.a || q.option_a || "",
+                b: q.b || q.option_b || "",
+                c: q.c || q.option_c || "",
+                d: q.d || q.option_d || "",
+                answer: (q.answer || q.correct_answer || "A").toUpperCase()
+            }));
+
+            render();
+        } catch(err) {
+            alert("JSON Parse Error");
+        }
+    };
+    reader.readAsText(file);
+});
+
+/* ================= ADD BLANK ================= */
+function addBlankQuestion() {
+    questions.push({ id: Date.now(), text: "", a: "", b: "", c: "", d: "", answer: "A" });
+    render();
+    setTimeout(() => {
+        document.getElementById("questions").lastElementChild?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+}
+
+/* ================= RENDER ================= */
+function render() {
+    const container = document.getElementById("questions");
+    container.innerHTML = "";
+    document.getElementById("count").innerText = questions.length;
+
+    if (questions.length === 0) {
+        container.innerHTML = `<div class="glass p-8 rounded-xl text-center text-white/40">
+            <p class="text-4xl mb-3">📋</p>
+            <p>No questions yet. Upload a JSON file or click "+ Add Question".</p>
+        </div>`;
+        return;
     }
-    function closeModal() {
-        document.getElementById('qModal').style.display = 'none';
+
+    questions.forEach((q, index) => {
+        const card = document.createElement("div");
+        card.className = "glass p-4 rounded-xl mb-4";
+
+        card.innerHTML = `
+        <div class="flex justify-between items-center mb-3">
+            <span class="font-bold text-cyan-400">Q${index + 1}</span>
+            <button onclick="removeQ(${q.id})" class="text-red-400 text-sm hover:text-red-300">🗑 Delete</button>
+        </div>
+
+        <input value="${escHtml(q.text)}"
+            placeholder="Question text"
+            oninput="update(${q.id},'text',this.value)"
+            class="w-full p-2 mb-3 rounded">
+
+        ${["A","B","C","D"].map(opt => `
+        <div class="flex items-center gap-2 mb-2">
+            <button onclick="setAnswer(${q.id},'${opt}')"
+                class="answer-btn px-3 py-1 rounded font-bold text-sm bg-white/10 ${q.answer === opt ? 'active' : ''}">
+                ${opt}
+            </button>
+            <input value="${escHtml(q[opt.toLowerCase()])}"
+                placeholder="Option ${opt}"
+                oninput="update(${q.id},'${opt.toLowerCase()}',this.value)"
+                class="flex-1 p-2 rounded">
+        </div>
+        `).join("")}
+        <p class="text-xs text-white/40 mt-1">Click A/B/C/D to mark the correct answer</p>
+        `;
+
+        container.appendChild(card);
+    });
+}
+
+function escHtml(str) {
+    return (str || '').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function update(id, field, value) {
+    const q = questions.find(q => q.id === id);
+    if (q) q[field] = value;
+}
+
+function setAnswer(id, answer) {
+    const q = questions.find(q => q.id === id);
+    if (q) { q.answer = answer; render(); }
+}
+
+function removeQ(id) {
+    questions = questions.filter(q => q.id !== id);
+    render();
+}
+
+/* ================= PUBLISH QUIZ ================= */
+document.getElementById("publish-btn").addEventListener("click", async function() {
+    const title       = document.getElementById("title").value.trim();
+    const category    = document.getElementById("category").value;
+    const level       = document.getElementById("level").value;
+    const description = document.getElementById("desc").value.trim();
+    const status      = document.getElementById("status");
+
+    if (!title || !category || !level || questions.length === 0) {
+        alert("Please fill in title, category, level and add at least one question.");
+        return;
     }
+
+    status.innerHTML = "⏳ Publishing...";
+    this.disabled = true;
+
+    try {
+        const response = await fetch("/api/publish-workshop", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ title, description, category, level, questions })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            status.innerHTML = "✅ Quiz Published!";
+            questions = [];
+            render();
+            document.getElementById("title").value = "";
+            document.getElementById("desc").value = "";
+            document.getElementById("category").value = "";
+            document.getElementById("level").value = "";
+            setTimeout(() => location.reload(), 1500);
+        } else {
+            status.innerHTML = "❌ Failed: " + (result.error || "Unknown error");
+        }
+    } catch(error) {
+        status.innerHTML = "❌ Server error";
+    }
+
+    this.disabled = false;
+});
+
+/* ================= EDIT WORKSHOP ================= */
+async function editWorkshop(workshopId) {
+    editWorkshopId = workshopId;
+    document.getElementById("editStatus").innerHTML = "";
+
+    try {
+        const res  = await fetch(`/api/workshop-questions/${workshopId}`);
+        editQuestionsData = await res.json();
+        renderEditModal();
+        document.getElementById("editModal").classList.remove("hidden");
+    } catch(e) {
+        alert("Failed to load questions.");
+    }
+}
+
+function renderEditModal() {
+    const container = document.getElementById("editQuestions");
+    container.innerHTML = "";
+
+    editQuestionsData.forEach((q, index) => {
+        const div = document.createElement("div");
+        div.className = "glass p-3 rounded-lg";
+        div.innerHTML = `
+        <div class="text-xs text-cyan-400 font-bold mb-1">Q${index + 1}</div>
+        <input value="${escHtml(q.text)}" placeholder="Question"
+            oninput="editQuestionsData[${index}].text = this.value"
+            class="w-full p-2 mb-2 rounded text-sm">
+        ${["a","b","c","d"].map(opt => `
+            <div class="flex items-center gap-2 mb-1">
+                <span class="text-xs text-white/60 w-4">${opt.toUpperCase()}</span>
+                <input value="${escHtml(q[opt])}" placeholder="Option ${opt.toUpperCase()}"
+                    oninput="editQuestionsData[${index}]['${opt}'] = this.value"
+                    class="flex-1 p-1.5 rounded text-sm">
+            </div>
+        `).join("")}
+        <div class="text-xs mt-1 text-white/50">Correct: <strong class="text-cyan-400">${q.answer}</strong></div>
+        `;
+        container.appendChild(div);
+    });
+}
+
+function closeEdit() {
+    document.getElementById("editModal").classList.add("hidden");
+}
+
+async function saveEdit() {
+    const status = document.getElementById("editStatus");
+    status.innerHTML = "⏳ Saving...";
+
+    try {
+        const res    = await fetch(`/api/update-workshop/${editWorkshopId}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ questions: editQuestionsData })
+        });
+        const result = await res.json();
+        if (result.success) {
+            status.innerHTML = "✅ Saved!";
+            setTimeout(closeEdit, 1000);
+        } else {
+            status.innerHTML = "❌ Failed";
+        }
+    } catch(e) {
+        status.innerHTML = "❌ Server error";
+    }
+}
 </script>
 
 </body>

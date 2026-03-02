@@ -1,0 +1,242 @@
+[
+  {
+    "question": "What is the center of our Solar System?",
+    "a": "Earth",
+    "b": "Moon",
+    "c": "Sun",
+    "d": "Mars",
+    "answer": "C"
+  },
+  {
+    "question": "Which planet is known as the Red Planet?",
+    "a": "Venus",
+    "b": "Mars",
+    "c": "Jupiter",
+    "d": "Saturn",
+    "answer": "B"
+  },
+  {
+    "question": "Water freezes at what temperature (°C)?",
+    "a": "0",
+    "b": "10",
+    "c": "50",
+    "d": "100",
+    "answer": "A"
+  },
+  {
+    "question": "Which gas do plants use for photosynthesis?",
+    "a": "Oxygen",
+    "b": "Nitrogen",
+    "c": "Carbon Dioxide",
+    "d": "Hydrogen",
+    "answer": "C"
+  },
+  {
+    "question": "What force pulls objects toward Earth?",
+    "a": "Magnetism",
+    "b": "Friction",
+    "c": "Gravity",
+    "d": "Electricity",
+    "answer": "C"
+  },
+  {
+    "question": "Which organ pumps blood in the human body?",
+    "a": "Brain",
+    "b": "Heart",
+    "c": "Lungs",
+    "d": "Kidney",
+    "answer": "B"
+  },
+  {
+    "question": "Which planet has the most rings?",
+    "a": "Earth",
+    "b": "Mars",
+    "c": "Saturn",
+    "d": "Mercury",
+    "answer": "C"
+  },
+  {
+    "question": "What is H2O commonly known as?",
+    "a": "Oxygen",
+    "b": "Salt",
+    "c": "Hydrogen",
+    "d": "Water",
+    "answer": "D"
+  },
+  {
+    "question": "How many legs does an insect have?",
+    "a": "4",
+    "b": "6",
+    "c": "8",
+    "d": "10",
+    "answer": "B"
+  },
+  {
+    "question": "Which planet is closest to the Sun?",
+    "a": "Mercury",
+    "b": "Venus",
+    "c": "Earth",
+    "d": "Mars",
+    "answer": "A"
+  },
+  {
+    "question": "Which vitamin do we get from sunlight?",
+    "a": "Vitamin A",
+    "b": "Vitamin B",
+    "c": "Vitamin C",
+    "d": "Vitamin D",
+    "answer": "D"
+  },
+  {
+    "question": "What part of the plant conducts photosynthesis?",
+    "a": "Root",
+    "b": "Stem",
+    "c": "Leaf",
+    "d": "Flower",
+    "answer": "C"
+  },
+  {
+    "question": "Which gas do humans breathe in?",
+    "a": "Oxygen",
+    "b": "Carbon Dioxide",
+    "c": "Nitrogen",
+    "d": "Helium",
+    "answer": "A"
+  },
+  {
+    "question": "Which planet is the largest?",
+    "a": "Earth",
+    "b": "Mars",
+    "c": "Jupiter",
+    "d": "Neptune",
+    "answer": "C"
+  },
+  {
+    "question": "Which animal is known as the King of the Jungle?",
+    "a": "Tiger",
+    "b": "Lion",
+    "c": "Elephant",
+    "d": "Leopard",
+    "answer": "B"
+  },
+  {
+    "question": "What is the boiling point of water (°C)?",
+    "a": "50",
+    "b": "90",
+    "c": "100",
+    "d": "120",
+    "answer": "C"
+  },
+  {
+    "question": "Which instrument measures temperature?",
+    "a": "Barometer",
+    "b": "Thermometer",
+    "c": "Hygrometer",
+    "d": "Altimeter",
+    "answer": "B"
+  },
+  {
+    "question": "Which planet is known for its Great Red Spot?",
+    "a": "Saturn",
+    "b": "Jupiter",
+    "c": "Mars",
+    "d": "Neptune",
+    "answer": "B"
+  },
+  {
+    "question": "Which blood cells fight infection?",
+    "a": "Red blood cells",
+    "b": "White blood cells",
+    "c": "Platelets",
+    "d": "Plasma",
+    "answer": "B"
+  },
+  {
+    "question": "What do bees collect from flowers?",
+    "a": "Water",
+    "b": "Pollen",
+    "c": "Sand",
+    "d": "Leaves",
+    "answer": "B"
+  },
+  {
+    "question": "Which is the hardest natural substance?",
+    "a": "Iron",
+    "b": "Gold",
+    "c": "Diamond",
+    "d": "Silver",
+    "answer": "C"
+  },
+  {
+    "question": "Which planet is known as Earth's twin?",
+    "a": "Mars",
+    "b": "Venus",
+    "c": "Jupiter",
+    "d": "Mercury",
+    "answer": "B"
+  },
+  {
+    "question": "What do we call animals that eat only plants?",
+    "a": "Carnivores",
+    "b": "Herbivores",
+    "c": "Omnivores",
+    "d": "Insectivores",
+    "answer": "B"
+  },
+  {
+    "question": "Which part of the body helps us think?",
+    "a": "Heart",
+    "b": "Brain",
+    "c": "Lungs",
+    "d": "Liver",
+    "answer": "B"
+  },
+  {
+    "question": "Which planet is known for its beautiful rings?",
+    "a": "Mars",
+    "b": "Earth",
+    "c": "Saturn",
+    "d": "Venus",
+    "answer": "C"
+  },
+  {
+    "question": "What is the main source of energy for Earth?",
+    "a": "Wind",
+    "b": "Moon",
+    "c": "Sun",
+    "d": "Water",
+    "answer": "C"
+  },
+  {
+    "question": "Which organ helps us breathe?",
+    "a": "Liver",
+    "b": "Lungs",
+    "c": "Kidney",
+    "d": "Stomach",
+    "answer": "B"
+  },
+  {
+    "question": "Which state of matter has no fixed shape or volume?",
+    "a": "Solid",
+    "b": "Liquid",
+    "c": "Gas",
+    "d": "Plasma",
+    "answer": "C"
+  },
+  {
+    "question": "What do we call molten rock from a volcano?",
+    "a": "Magma",
+    "b": "Lava",
+    "c": "Coal",
+    "d": "Ash",
+    "answer": "B"
+  },
+  {
+    "question": "Which planet takes the longest time to orbit the Sun?",
+    "a": "Earth",
+    "b": "Mars",
+    "c": "Neptune",
+    "d": "Venus",
+    "answer": "C"
+  }
+]
