@@ -9,7 +9,7 @@ app = Flask(__name__)
 db_config = {
     "host": "localhost",
     "user": "root",
-    "password": "StrongPassword123!",
+    "password": "Root@1234",
     "database": "science_quiz"
 }
 
@@ -640,3 +640,7 @@ def update_workshop(workshop_id):
 if __name__ == "__main__":
     init_db()
     app.run(host="127.0.0.1", port=5050, debug=True)
+
+
+
+

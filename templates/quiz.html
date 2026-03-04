@@ -8,9 +8,10 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Poppins', sans-serif; background: radial-gradient(circle at top, #003a5f, #020b1a); color: white; min-height: 100vh; }
-        
+
         .container { display: flex; height: 100vh; }
 
+        /* Sidebar Styling */
         .sidebar { width: 260px; background: linear-gradient(180deg, #051a30, #020b1a); padding: 25px; z-index: 5; border-right: 1px solid rgba(0, 229, 255, 0.1); flex-shrink: 0; }
         .brand-title { font-family: 'Orbitron', sans-serif; color: #00e5ff; font-size: 20px; margin-bottom: 40px; }
         .menu a { display: block; padding: 14px; margin-bottom: 12px; border-radius: 12px; text-decoration: none; color: #e0f7ff; background: rgba(255,255,255,0.05); transition: 0.3s; }
@@ -29,25 +30,17 @@
             margin-top: 60px;
         }
         .no-questions h2 { color: #00e5ff; font-family: 'Orbitron', sans-serif; margin-bottom: 15px; }
-        .no-questions p { color: #9adfff; margin-bottom: 25px; }
-        .no-questions a { 
-            padding: 12px 30px; 
-            background: #00e5ff; 
-            color: #020b1a; 
-            border-radius: 30px; 
-            text-decoration: none; 
-            font-weight: bold;
-        }
+        .no-questions a { padding: 12px 30px; background: #00e5ff; color: #020b1a; border-radius: 30px; text-decoration: none; font-weight: bold; display: inline-block; margin-top: 20px; }
 
+        /* Quiz Card */
         .quiz-card { width: 100%; max-width: 720px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); padding: 40px; border-radius: 25px; border: 1px solid rgba(0, 229, 255, 0.2); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); }
-
         .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
         h1 { font-family: 'Orbitron', sans-serif; font-size: 24px; color: #00e5ff; }
-        .score-badge { background: rgba(0,229,255,0.15); border: 1px solid rgba(0,229,255,0.3); padding: 8px 18px; border-radius: 20px; font-family: 'Orbitron', sans-serif; color: #00e5ff; font-size: 14px; }
+        .score-badge { background: rgba(0,229,255,0.15); border: 1px solid rgba(0,229,255,0.3); padding: 8px 18px; border-radius: 20px; font-family: 'Orbitron', sans-serif; color: #00e5ff; }
 
-        /* Progress bar */
+        /* Progress Bar */
         .progress-bar-bg { width: 100%; background: rgba(255,255,255,0.1); border-radius: 10px; height: 6px; margin-bottom: 30px; }
-        .progress-bar { height: 6px; border-radius: 10px; background: linear-gradient(90deg, #00e5ff, #0080ff); transition: width 0.4s ease; }
+        .progress-bar { height: 6px; border-radius: 10px; background: linear-gradient(90deg, #00e5ff, #0080ff); transition: width 0.4s ease; width: 0%; }
 
         .question-wrapper { display: none; }
         .question-wrapper.active { display: block; animation: fadeIn 0.4s ease-out; }
@@ -59,35 +52,30 @@
 
         .question-text { font-size: 20px; font-weight: 500; margin-bottom: 25px; color: #fff; line-height: 1.6; }
 
+        /* Options Grid */
         .options-grid { display: grid; gap: 12px; }
-        .option { padding: 15px 20px; background: rgba(0, 229, 255, 0.08); border: 1px solid rgba(0, 229, 255, 0.2); border-radius: 12px; cursor: pointer; transition: 0.25s; font-size: 16px; display: flex; align-items: center; gap: 12px; }
+        .option { padding: 15px 20px; background: rgba(0, 229, 255, 0.08); border: 1px solid rgba(0, 229, 255, 0.2); border-radius: 12px; cursor: pointer; transition: 0.25s; display: flex; align-items: center; gap: 12px; }
         .option:hover:not(.locked) { background: rgba(0, 229, 255, 0.2); border-color: #00e5ff; transform: translateX(4px); }
-        
-        .option .opt-label { width: 30px; height: 30px; border-radius: 50%; background: rgba(0,229,255,0.2); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 13px; flex-shrink: 0; }
-        
-        .option.correct { background: rgba(46,204,113,0.2) !important; color: #fff; border-color: #2ecc71; }
-        .option.correct .opt-label { background: #2ecc71; }
-        .option.wrong   { background: rgba(231,76,60,0.2) !important; color: #fff; border-color: #e74c3c; }
-        .option.wrong .opt-label { background: #e74c3c; }
-        .option.locked  { cursor: default; transform: none !important; }
+        .option.locked { cursor: default; }
 
-        .feedback { margin-top: 15px; font-size: 15px; font-weight: 600; text-align: center; min-height: 24px; }
+        .opt-label { width: 30px; height: 30px; border-radius: 50%; background: rgba(0,229,255,0.2); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 13px; flex-shrink: 0; }
 
+        /* Feedback Colors */
+        .option.correct { background: rgba(46,204,113,0.3) !important; border-color: #2ecc71 !important; }
+        .option.correct .opt-label { background: #2ecc71; color: white; }
+        .option.wrong { background: rgba(231,76,60,0.3) !important; border-color: #e74c3c !important; }
+        .option.wrong .opt-label { background: #e74c3c; color: white; }
+
+        .feedback { margin-top: 15px; font-size: 16px; font-weight: 600; text-align: center; min-height: 24px; }
+
+        /* Navigation */
         .nav-controls { display: flex; justify-content: space-between; margin-top: 35px; }
-        .btn { padding: 12px 28px; border-radius: 30px; border: none; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; transition: 0.3s; font-size: 15px; }
-        
+        .btn { padding: 12px 28px; border-radius: 30px; border: none; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; transition: 0.3s; }
         .btn-secondary { background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255, 255, 255, 0.2); }
-        .btn-secondary:hover:not(:disabled) { background: rgba(255, 255, 255, 0.2); }
-        
         .btn-primary { background: #00e5ff; color: #020b1a; }
-        .btn-primary:hover:not(:disabled) { background: #fff; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 229, 255, 0.3); }
-        
-        .btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none !important; }
+        .btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
         .progress-info { margin-top: 20px; font-size: 13px; color: #9adfff; font-family: 'Orbitron', sans-serif; text-align: center; }
-
-        .main::-webkit-scrollbar { width: 8px; }
-        .main::-webkit-scrollbar-thumb { background: rgba(0, 229, 255, 0.2); border-radius: 10px; }
     </style>
 </head>
 <body>
@@ -98,20 +86,17 @@
         <div class="menu">
             <a href="{{ url_for('home') }}">🏠 Home</a>
             <a href="{{ url_for('make_quiz') }}">📝 Create Quiz</a>
-            <a href="{{ url_for('games') }}">🎮 Create Game</a>
-            <a href="{{ url_for('category') }}">🚀 Start Quiz</a>
-            <a href="{{ url_for('start_games') }}">🕹️ Start Games</a>
+            <a href="{{ url_for('category') }}" class="active">🚀 Start Quiz</a>
             <a href="{{ url_for('videos') }}">📹 Videos</a>
         </div>
     </div>
 
     <div class="main">
-
         {% if not questions %}
         <div class="no-questions">
             <h2>No Questions Found</h2>
-            <p>{{ error or "No questions are available for this selection. Please create a quiz first." }}</p>
-            <a href="{{ url_for('category') }}">← Back to Quiz Selection</a>
+            <p>Please upload a JSON file in the "Create Quiz" section first.</p>
+            <a href="{{ url_for('category') }}">← Back to Categories</a>
         </div>
         {% else %}
 
@@ -122,23 +107,28 @@
             </div>
 
             <div class="progress-bar-bg">
-                <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+                <div id="progressBar" class="progress-bar"></div>
             </div>
 
             <div id="quiz-content">
                 {% for q in questions %}
-                <div class="question-wrapper {% if loop.first %}active{% endif %}" 
-                     data-q-index="{{ loop.index0 }}" 
+                <div class="question-wrapper {% if loop.first %}active{% endif %}"
+                     data-q-index="{{ loop.index0 }}"
                      data-correct="{{ q.correct_answer }}">
                     <p class="question-text">{{ loop.index }}. {{ q.question }}</p>
                     <div class="options-grid">
-                        {% for letter, text in [('A', q.option_a), ('B', q.option_b), ('C', q.option_c), ('D', q.option_d)] %}
-                        <div class="option" data-choice="{{ letter }}" 
-                             onclick="handleSelect(this, {{ loop.index0 }}, '{{ letter }}')">
-                            <div class="opt-label">{{ letter }}</div>
-                            <span>{{ text }}</span>
+                        <div class="option" data-choice="A" onclick="handleSelect(this, {{ loop.index0 }}, 'A')">
+                            <div class="opt-label">A</div><span>{{ q.option_a }}</span>
                         </div>
-                        {% endfor %}
+                        <div class="option" data-choice="B" onclick="handleSelect(this, {{ loop.index0 }}, 'B')">
+                            <div class="opt-label">B</div><span>{{ q.option_b }}</span>
+                        </div>
+                        <div class="option" data-choice="C" onclick="handleSelect(this, {{ loop.index0 }}, 'C')">
+                            <div class="opt-label">C</div><span>{{ q.option_c }}</span>
+                        </div>
+                        <div class="option" data-choice="D" onclick="handleSelect(this, {{ loop.index0 }}, 'D')">
+                            <div class="opt-label">D</div><span>{{ q.option_d }}</span>
+                        </div>
                     </div>
                     <div class="feedback" id="feedback-{{ loop.index0 }}"></div>
                 </div>
@@ -146,71 +136,79 @@
             </div>
 
             <div class="nav-controls">
-                <button class="btn btn-secondary" id="prevBtn" onclick="navigate(-1)" disabled>⬅ Previous</button>
-                <button class="btn btn-primary"   id="nextBtn" onclick="navigate(1)">Next ➡</button>
+                <button class="btn btn-secondary" id="prevBtn" onclick="navigate(-1)">⬅ Previous</button>
+                <button class="btn btn-primary" id="nextBtn" onclick="navigate(1)">Next ➡</button>
             </div>
 
             <div class="progress-info">
                 Question <span id="currentNum">1</span> of <span id="totalNum">{{ questions|length }}</span>
             </div>
         </div>
-
         {% endif %}
     </div>
 </div>
 
 <script>
-    let currentIndex  = 0;
+    let currentIndex = 0;
     const questionWrappers = document.querySelectorAll('.question-wrapper');
-    const totalQuestions   = questionWrappers.length;
-    const userAnswers      = new Array(totalQuestions).fill(null);
-    let correctCount       = 0;
+    const totalQuestions = questionWrappers.length;
+    const userAnswers = new Array(totalQuestions).fill(null);
+    let correctCount = 0;
+
+    function handleSelect(element, qIdx, answer) {
+        try {
+            const wrapper = questionWrappers[qIdx];
+            // Prevent clicking if already answered
+            if (!wrapper || userAnswers[qIdx] !== null) return;
+
+            // Get the correct answer from the data-attribute (ensure it's trimmed and consistent)
+            const correctAnswer = wrapper.getAttribute('data-correct').trim();
+            userAnswers[qIdx] = answer;
+
+            const isCorrect = (answer === correctAnswer);
+            if (isCorrect) correctCount++;
+
+            // Highlight Correct/Wrong options
+            const options = wrapper.querySelectorAll('.option');
+            options.forEach(opt => {
+                opt.classList.add('locked');
+                const choice = opt.getAttribute('data-choice');
+                if (choice === correctAnswer) {
+                    opt.classList.add('correct');
+                } else if (choice === answer && !isCorrect) {
+                    opt.classList.add('wrong');
+                }
+            });
+
+            // Update Feedback Text
+            const feedback = document.getElementById(`feedback-${qIdx}`);
+            if (feedback) {
+                feedback.innerText = isCorrect ? '🎉 Correct!' : `❌ Wrong! Correct: ${correctAnswer}`;
+                feedback.style.color = isCorrect ? '#2ecc71' : '#e74c3c';
+            }
+
+            // Update Score
+            document.getElementById('scoreDisplay').innerText = correctCount;
+        } catch (error) {
+            console.error("Selection Error:", error);
+        }
+    }
 
     function navigate(step) {
         const newIndex = currentIndex + step;
-
         if (newIndex >= 0 && newIndex < totalQuestions) {
             questionWrappers[currentIndex].classList.remove('active');
             currentIndex = newIndex;
             questionWrappers[currentIndex].classList.add('active');
             updateUI();
         } else if (newIndex === totalQuestions) {
-            // Submit quiz
             submitQuiz();
         }
     }
 
-    function handleSelect(element, qIdx, answer) {
-        const wrapper = questionWrappers[qIdx];
-
-        // Don't allow re-answering
-        if (userAnswers[qIdx] !== null) return;
-
-        const correctAnswer = wrapper.getAttribute('data-correct');
-        const options       = wrapper.querySelectorAll('.option');
-
-        userAnswers[qIdx] = answer;
-
-        const isCorrect = (answer === correctAnswer);
-        if (isCorrect) correctCount++;
-
-        options.forEach(opt => {
-            opt.classList.add('locked');
-            const choice = opt.getAttribute('data-choice');
-            if (choice === correctAnswer) opt.classList.add('correct');
-            else if (choice === answer)   opt.classList.add('wrong');
-        });
-
-        const feedback = document.getElementById('feedback-' + qIdx);
-        if (feedback) {
-            feedback.innerText  = isCorrect ? '🎉 Correct!' : `❌ Wrong! Correct answer: ${correctAnswer}`;
-            feedback.style.color = isCorrect ? '#2ecc71' : '#e74c3c';
-        }
-
-        document.getElementById('scoreDisplay').innerText = correctCount;
-    }
-
     function updateUI() {
+        if (totalQuestions === 0) return;
+
         document.getElementById('prevBtn').disabled = (currentIndex === 0);
         document.getElementById('currentNum').innerText = currentIndex + 1;
 
@@ -223,20 +221,20 @@
 
     function submitQuiz() {
         const unanswered = userAnswers.filter(a => a === null).length;
-        const msg = unanswered > 0
-            ? `You have ${unanswered} unanswered question(s). Submit anyway?`
-            : `Submit quiz? Your score: ${correctCount} / ${totalQuestions}`;
+        let msg = `Final Score: ${correctCount} / ${totalQuestions}`;
+        if (unanswered > 0) msg = `You missed ${unanswered} questions. ` + msg;
 
-        if (confirm(msg)) {
+        if (confirm(msg + "\nGo to results page?")) {
             window.location.href = `/result?score=${correctCount}&total=${totalQuestions}`;
         }
     }
 
+    // Initialize UI on load
     if (totalQuestions > 0) {
         updateUI();
-        document.getElementById('totalNum').innerText = totalQuestions;
     }
 </script>
 
 </body>
 </html>
+

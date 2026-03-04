@@ -1,280 +1,346 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Videos | SciSparkQuiz</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>Videos | SciSparkQuiz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
 
-<style>
-*{margin:0;padding:0;box-sizing:border-box;}
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-body{
-    font-family:'Poppins',sans-serif;
-    background:radial-gradient(circle at top,#003a5f,#020b1a);
-    color:white;
-    height:100vh;
-    overflow:hidden;
-}
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: radial-gradient(circle at top, #003a5f, #020b1a);
+            color: white;
+            height: 100vh;
+            overflow: hidden;
+        }
 
-.container{display:flex;height:100vh;}
+        .container { display: flex; height: 100vh; }
 
-/* SIDEBAR */
-.sidebar{
-    width:260px;
-    background:linear-gradient(180deg,#051a30,#020b1a);
-    padding:25px;
-    border-right:1px solid rgba(0,229,255,0.1);
-    flex-shrink:0;
-}
+        /* SIDEBAR */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, #051a30, #020b1a);
+            padding: 25px;
+            border-right: 1px solid rgba(0, 229, 255, 0.1);
+            flex-shrink:0;
+        }
 
-.brand-title{
-    font-family:'Orbitron',sans-serif;
-    color:#00e5ff;
-    font-size:20px;
-    margin-bottom:40px;
-}
+        .brand-title {
+            font-family: 'Orbitron', sans-serif;
+            color: #00e5ff;
+            font-size: 20px;
+            margin-bottom: 40px;
+            letter-spacing: 2px;
+        }
 
-.menu-section{
-    font-size:10px;
-    text-transform:uppercase;
-    color:rgba(255,255,255,0.3);
-    margin:20px 0 8px;
-}
+        .menu-section {
+            font-size: 10px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.3);
+            margin: 20px 0 8px;
+            letter-spacing: 1px;
+        }
 
-.menu a{
-    display:block;
-    padding:12px 14px;
-    margin-bottom:8px;
-    border-radius:12px;
-    text-decoration:none;
-    color:#e0f7ff;
-    background:rgba(255,255,255,0.05);
-    transition:0.3s;
-    font-size:14px;
-}
+        .menu a {
+            display: block;
+            padding: 12px 14px;
+            margin-bottom: 8px;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #e0f7ff;
+            background: rgba(255, 255, 255, 0.05);
+            transition: 0.3s;
+            font-size: 14px;
+        }
 
-.menu a:hover,
-.menu a.active{
-    background:rgba(0,229,255,0.25);
-    transform:translateX(6px);
-    color:#fff;
-}
+        .menu a:hover, .menu a.active {
+            background: rgba(0, 229, 255, 0.25);
+            transform: translateX(6px);
+            color: #fff;
+        }
 
-/* MAIN */
-.main{
-    flex:1;
-    padding:40px 50px;
-    overflow-y:auto;
-}
+        /* MAIN */
+        .main {
+            flex: 1;
+            padding: 40px 50px;
+            overflow-y: auto;
+        }
 
-.main::-webkit-scrollbar{width:8px;}
-.main::-webkit-scrollbar-thumb{
-    background:rgba(0,229,255,0.3);
-    border-radius:10px;
-}
+        .main::-webkit-scrollbar { width: 8px; }
+        .main::-webkit-scrollbar-thumb {
+            background: rgba(0, 229, 255, 0.3);
+            border-radius: 10px;
+        }
 
-/* HEADER */
-.header-section h1{
-    font-family:'Orbitron',sans-serif;
-    font-size:32px;
-    color:#00e5ff;
-    margin-bottom:10px;
-}
-.header-section p{
-    color:#bdefff;
-    margin-bottom:30px;
-}
+        /* HEADER & FILTERS */
+        .header-section h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 32px;
+            color: #00e5ff;
+            margin-bottom: 10px;
+        }
 
-/* FEATURED VIDEO */
-.video-player-container{
-    background:rgba(0,0,0,0.4);
-    border-radius:20px;
-    padding:20px;
-    border:1px solid rgba(0,229,255,0.2);
-    margin-bottom:40px;
-    box-shadow:0 10px 30px rgba(0,0,0,0.5);
-}
+        .category-filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
 
-.video-wrapper{
-    position:relative;
-    padding-bottom:56.25%;
-    height:0;
-    border-radius:15px;
-    overflow:hidden;
-}
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 229, 255, 0.2);
+            color: #bdefff;
+            padding: 8px 18px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 13px;
+            font-family: 'Orbitron', sans-serif;
+        }
 
-.video-wrapper iframe{
-    position:absolute;
-    width:100%;
-    height:100%;
-    border:none;
-}
+        .filter-btn:hover, .filter-btn.active {
+            background: #00e5ff;
+            color: #020b1a;
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
+        }
 
-#video-title{
-    margin-top:15px;
-    color:#00e5ff;
-    font-size:18px;
-}
+        /* FEATURED VIDEO */
+        .video-player-container {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(0, 229, 255, 0.2);
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
 
-/* GRID */
-.video-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
-    gap:25px;
-    padding-bottom:50px;
-}
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            border-radius: 15px;
+            overflow: hidden;
+            background: #000;
+        }
 
-.video-card{
-    background:rgba(255,255,255,0.06);
-    padding:15px;
-    border-radius:18px;
-    border:1px solid rgba(255,255,255,0.05);
-    transition:0.4s;
-    cursor:pointer;
-}
+        .video-wrapper iframe {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
 
-.video-card:hover{
-    transform:translateY(-8px);
-    background:rgba(0,229,255,0.12);
-    border-color:rgba(0,229,255,0.3);
-    box-shadow:0 0 25px rgba(0,229,255,0.2);
-}
+        #video-title {
+            margin-top: 15px;
+            color: #00e5ff;
+            font-size: 20px;
+            font-family: 'Orbitron', sans-serif;
+        }
 
-.thumbnail-placeholder{
-    width:100%;
-    height:150px;
-    background:#051a30;
-    border-radius:12px;
-    margin-bottom:12px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:40px;
-}
+        /* GRID */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            padding-bottom: 50px;
+        }
 
-.video-card h3{
-    font-size:18px;
-    color:#00e5ff;
-    margin-bottom:5px;
-}
+        .video-card {
+            background: rgba(255, 255, 255, 0.06);
+            padding: 15px;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: 0.4s;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
 
-.video-card p{
-    font-size:13px;
-    color:#9adfff;
-    line-height:1.4;
-    height:36px;
-    overflow:hidden;
-}
+        .video-card:hover {
+            transform: translateY(-8px);
+            background: rgba(0, 229, 255, 0.12);
+            border-color: rgba(0, 229, 255, 0.3);
+            box-shadow: 0 0 25px rgba(0, 229, 255, 0.2);
+        }
 
-.video-tag{
-    display:inline-block;
-    margin-top:8px;
-    padding:4px 10px;
-    font-size:10px;
-    border-radius:6px;
-    background:rgba(0,229,255,0.2);
-    color:#00e5ff;
-    font-family:'Orbitron';
-    text-transform:uppercase;
-}
-</style>
+        .thumbnail-placeholder {
+            width: 100%;
+            height: 150px;
+            background: #051a30;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            border: 1px solid rgba(0, 229, 255, 0.1);
+        }
+
+        .video-card h3 {
+            font-size: 16px;
+            color: #00e5ff;
+            margin-bottom: 8px;
+            font-family: 'Orbitron', sans-serif;
+            line-height: 1.2;
+        }
+
+        .video-card p {
+            font-size: 13px;
+            color: #9adfff;
+            line-height: 1.4;
+            margin-bottom: 15px;
+            flex-grow: 1;
+        }
+
+        .video-tag {
+            display: inline-block;
+            padding: 4px 10px;
+            font-size: 10px;
+            border-radius: 6px;
+            background: rgba(0, 229, 255, 0.2);
+            color: #00e5ff;
+            font-family: 'Orbitron';
+            text-transform: uppercase;
+            align-self: flex-start;
+        }
+
+        .hidden { display: none !important; }
+    </style>
 </head>
 
 <body>
 
 <div class="container">
+    <div class="sidebar">
+        <div class="brand-title">GRAVITON</div>
+        <div class="menu">
+            <div class="menu-section">Main</div>
+            <a href="{{ url_for('home') }}">🏠 Home</a>
+            <a href="{{ url_for('videos') }}" class="active">📹 Videos</a>
 
-<div class="sidebar">
-    <div class="brand-title">GRAVITON</div>
-    <div class="menu">
-        <div class="menu-section">Main</div>
-        <a href="{{ url_for('home') }}">🏠 Home</a>
-        <a href="{{ url_for('videos') }}" class="active">📹 Videos</a>
+            <div class="menu-section">Staff</div>
+            <a href="{{ url_for('make_quiz') }}">📝 Create Quiz</a>
+            <a href="{{ url_for('games') }}">🎮 Create Game</a>
 
-        <div class="menu-section">Staff</div>
-        <a href="{{ url_for('make_quiz') }}">📝 Create Quiz</a>
-        <a href="{{ url_for('games') }}">🎮 Create Game</a>
+            <div class="menu-section">Students</div>
+            <a href="{{ url_for('category') }}">🚀 Start Quiz</a>
+            <a href="{{ url_for('start_games') }}">🕹️ Start Games</a>
+        </div>
+    </div>
 
-        <div class="menu-section">Students</div>
-        <a href="{{ url_for('category') }}">🚀 Start Quiz</a>
-        <a href="{{ url_for('start_games') }}">🕹️ Start Games</a>
+    <div class="main">
+        <div class="header-section">
+            <h1>Workshop Videos 📺</h1>
+            <div class="category-filters" id="filters">
+                <button class="filter-btn active" onclick="filterVideos('All')">All</button>
+                <button class="filter-btn" onclick="filterVideos('Physics')">Physics</button>
+                <button class="filter-btn" onclick="filterVideos('Chemistry')">Chemistry</button>
+                <button class="filter-btn" onclick="filterVideos('Biology')">Biology</button>
+                <button class="filter-btn" onclick="filterVideos('General')">General</button>
+            </div>
+        </div>
+
+        <div class="video-player-container">
+            <div class="video-wrapper">
+                <iframe id="main-video"
+                        src="https://www.youtube.com/embed/S9V0_TIdH6U"
+                        title="Main Video Player"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+            </div>
+            <h3 id="video-title">Now Playing: The Science of Light</h3>
+        </div>
+
+        <div class="video-grid" id="video-grid">
+            <!-- Videos injected by JavaScript -->
+        </div>
     </div>
 </div>
 
-<div class="main">
-
-<div class="header-section">
-    <h1>Workshop Videos 📺</h1>
-    <p>Select a video and start learning.</p>
-</div>
-
-<div class="video-player-container">
-    <div class="video-wrapper">
-        <iframe id="main-video"
-        src="https://www.youtube.com/embed/TKM0P3XlMNA"
-        allowfullscreen></iframe>
-    </div>
-    <h3 id="video-title">Now Playing: Newton's Laws of Motion</h3>
-</div>
-
-<div class="video-grid">
-
-<!-- ALL 28 VIDEOS -->
 <script>
-const videos = [
-["⚡","Laws of Motion","Exploring the three laws of classical mechanics.","Physics","https://www.youtube.com/embed/TKM0P3XlMNA"],
-["🔌","Static Electricity","Understanding electric charges and fields.","Physics","https://www.youtube.com/embed/Px1wnARs12Q"],
-["⚙️","Simple Machines","How levers and pulleys work.","Physics","https://www.youtube.com/embed/Pj-h6W98nJw"],
-["🔊","Science of Sound","How vibrations travel.","Physics","https://www.youtube.com/embed/yv_Yp09M6pI"],
-["🔦","Light & Optics","Reflection and refraction.","Physics","https://www.youtube.com/embed/S9V0_TIdH6U"],
-["🧲","Magnetism","Magnetic fields explained.","Physics","https://www.youtube.com/embed/vO89W9_vRGo"],
-["🪐","Gravity","Why planets orbit.","Physics","https://www.youtube.com/embed/rL8X2afJIMc"],
-["🧪","Chemical Reactions","Endo & Exothermic.","Chemistry","https://www.youtube.com/embed/-w6oW1ut4Dw"],
-["⚗️","Periodic Table","Elements explained.","Chemistry","https://www.youtube.com/embed/iIJD8RNLpS0"],
-["🍋","Acids & Bases","pH scale.","Chemistry","https://www.youtube.com/embed/HAPc6JH85pM"],
-["🧊","States of Matter","Solid liquid gas plasma.","Chemistry","https://www.youtube.com/embed/v6W_YpPrjV4"],
-["⚛️","Atoms & Molecules","Structure of matter.","Chemistry","https://www.youtube.com/embed/R1RMV5qhwyE"],
-["🥣","Mixtures","Types of solutions.","Chemistry","https://www.youtube.com/embed/uS7zfeK4OTQ"],
-["🔋","Electrochemistry","Batteries.","Chemistry","https://www.youtube.com/embed/X9L-9_X9u0c"],
-["🧬","Cell Structure","Cells explained.","Biology","https://www.youtube.com/embed/URUJD5NEXC8"],
-["🍎","Human Body","Digestive system.","Biology","https://www.youtube.com/embed/4GZ3D2Vdf_o"],
-["🍃","Photosynthesis","Plant food.","Biology","https://www.youtube.com/embed/D1Z-S7S_vS0"],
-["❤️","Circulatory System","Heart & blood.","Biology","https://www.youtube.com/embed/fAivpC974w4"],
-["🌍","Ecosystems","Food webs.","Biology","https://www.youtube.com/embed/C_9O022K6F4"],
-["🌻","Plant Anatomy","Roots & stems.","Biology","https://www.youtube.com/embed/V6b6_r4Z6I0"],
-["🧬","DNA Basics","Genetics.","Biology","https://www.youtube.com/embed/_IGXn0nQj_w"],
-["🔍","Scientific Method","Steps of science.","General","https://www.youtube.com/embed/6_9C96kY380"],
-["☀️","Solar System","Planets.","General","https://www.youtube.com/embed/jgfV_9999oM"],
-["☁️","Water Cycle","Evaporation.","General","https://www.youtube.com/embed/al-do-HGuIk"],
-["🌋","Earth Layers","Crust to core.","General","https://www.youtube.com/embed/Xp0h5Y19j_E"],
-["🌦️","Weather Science","Climate.","General","https://www.youtube.com/embed/4_GZ3_G_3_0"],
-["⚡","Renewable Energy","Energy sources.","General","https://www.youtube.com/embed/7_4_7_4_7_4"],
-["🥽","Lab Safety","Science safety.","General","https://www.youtube.com/embed/fAivpC9_A_I"]
-];
+    const videos = [
+        // Physics
+        { icon: "💡", title: "Science of Light", desc: "How reflection and refraction create the world we see.", cat: "Physics", url: "https://www.youtube.com/embed/S9V0_TIdH6U" },
+        { icon: "⚡", title: "Electric Currents", desc: "The movement of electrons and how circuits work.", cat: "Physics", url: "https://www.youtube.com/embed/HXOok3mfMLM" },
+        { icon: "⚖️", title: "Newton's Laws", desc: "The fundamental principles of classical mechanics.", cat: "Physics", url: "https://www.youtube.com/embed/kKKM8Y-u7ds" },
+        { icon: "🧲", title: "How Magnets Work", desc: "The mystery of magnetic fields and poles.", cat: "Physics", url: "https://www.youtube.com/embed/yXCeuSiTOug" },
+        { icon: "🔊", title: "Physics of Sound", desc: "Understanding frequency, amplitude, and waves.", cat: "Physics", url: "https://www.youtube.com/embed/PXpUStI18N8" },
+        { icon: "🎢", title: "Energy & Work", desc: "Potential and kinetic energy in our daily lives.", cat: "Physics", url: "https://www.youtube.com/embed/2WPT0k7atO4" },
+        { icon: "🍎", title: "Universal Gravity", desc: "Why objects fall and planets stay in orbit.", cat: "Physics", url: "https://www.youtube.com/embed/mezkHBPLZ4A" },
 
-const grid=document.currentScript.parentElement;
-videos.forEach(v=>{
-grid.innerHTML+=`
-<div class="video-card" onclick="changeVideo('${v[4]}','${v[1]}')">
-<div class="thumbnail-placeholder">${v[0]}</div>
-<h3>${v[1]}</h3>
-<p>${v[2]}</p>
-<span class="video-tag">${v[3]}</span>
-</div>`;
-});
-</script>
+        // Chemistry
+        { icon: "⚛️", title: "The Shell Model", desc: "Understanding the complex structure of atoms.", cat: "Chemistry", url: "https://www.youtube.com/embed/v6W_YpPrjV4" },
+        { icon: "⚗️", title: "Chemical Bonds", desc: "Ionic, covalent, and metallic bonding explained.", cat: "Chemistry", url: "https://www.youtube.com/embed/QXT4OVM4vXI" },
+        { icon: "🧊", title: "States of Matter", desc: "Exploring solids, liquids, gases, and plasma.", cat: "Chemistry", url: "https://www.youtube.com/embed/jm9h17ca060" },
+        { icon: "🍋", title: "Acids & Bases", desc: "pH scales and the chemistry of protons.", cat: "Chemistry", url: "https://www.youtube.com/embed/vLnPwxZdW4Y" },
+        { icon: "🔥", title: "Chemical Reactions", desc: "Exothermic vs Endothermic reactions.", cat: "Chemistry", url: "https://www.youtube.com/embed/T6i7mNfRAn8" },
+        { icon: "🧪", title: "The Periodic Table", desc: "Organizing the elements of the universe.", cat: "Chemistry", url: "https://www.youtube.com/embed/fPnwBITSmgU" },
+        { icon: "🧂", title: "Solutions & Mixtures", desc: "How substances dissolve and separate.", cat: "Chemistry", url: "https://www.youtube.com/embed/9GvX87P_30w" },
 
-</div>
-</div>
-</div>
+        // Biology
+        { icon: "🧬", title: "How DNA Works", desc: "The biological blueprint that makes you, you.", cat: "Biology", url: "https://www.youtube.com/embed/8kK2zwjRV0M" },
+        { icon: "🧠", title: "How the Brain Works", desc: "An overview of the most complex organ in the body.", cat: "Biology", url: "https://www.youtube.com/embed/XSzsI5a96E4" },
+        { icon: "🦠", title: "Bacteria vs Viruses", desc: "The tiny world of microbes and pathogens.", cat: "Biology", url: "https://www.youtube.com/embed/4S9S6L9OqQk" },
+        { icon: "🌿", title: "Photosynthesis", desc: "How plants transform sunlight into energy.", cat: "Biology", url: "https://www.youtube.com/embed/UPBMG5EYydo" },
+        { icon: "🫀", title: "The Heart", desc: "How the circulatory system pumps life.", cat: "Biology", url: "https://www.youtube.com/embed/fAivpC974w4" },
+        { icon: "🦴", title: "The Skeleton", desc: "Structure and function of the human frame.", cat: "Biology", url: "https://www.youtube.com/embed/RW46rQKWa-g" },
+        { icon: "🌳", title: "Ecosystems", desc: "Interconnected life in nature's food webs.", cat: "Biology", url: "https://www.youtube.com/embed/C_9O022K6F4" },
 
-<script>
-function changeVideo(url,title){
-document.getElementById('main-video').src=url;
-document.getElementById('video-title').innerText="Now Playing: "+title;
-window.scrollTo({top:0,behavior:'smooth'});
-}
+        // General Science
+        { icon: "🔭", title: "Scientific Method", desc: "How scientists think and prove theories.", cat: "General", url: "https://www.youtube.com/embed/6_9C96kY380" },
+        { icon: "🌍", title: "The Water Cycle", desc: "Earth's giant recycling system for water.", cat: "General", url: "https://www.youtube.com/embed/al-do-HGuIk" },
+        { icon: "🌋", title: "Plate Tectonics", desc: "Why the Earth's crust moves and shifts.", cat: "General", url: "https://www.youtube.com/embed/zbtAXW-Re9I" },
+        { icon: "☀️", title: "Solar Energy", desc: "Harnessing the power of our closest star.", cat: "General", url: "https://www.youtube.com/embed/GqtUWyDR1fg" },
+        { icon: "🛡️", title: "Lab Safety", desc: "Essential rules for every science student.", cat: "General", url: "https://www.youtube.com/embed/MEPWR_WCDs0" },
+        { icon: "💨", title: "Climate Change", desc: "Understanding the science of global warming.", cat: "General", url: "https://www.youtube.com/embed/dcBXmj1nMTQ" },
+        { icon: "🦖", title: "Evolution", desc: "How life adapts and changes over millions of years.", cat: "General", url: "https://www.youtube.com/embed/hOfRN0KihOU" }
+    ];
+
+    function renderVideos(filter = 'All') {
+        const grid = document.getElementById('video-grid');
+        grid.innerHTML = '';
+
+        videos.forEach(v => {
+            if (filter === 'All' || v.cat === filter) {
+                const card = document.createElement('div');
+                card.className = 'video-card';
+                card.onclick = () => changeVideo(v.url, v.title);
+                card.innerHTML = `
+                    <div class="thumbnail-placeholder">${v.icon}</div>
+                    <h3>${v.title}</h3>
+                    <p>${v.desc}</p>
+                    <span class="video-tag">${v.cat}</span>
+                `;
+                grid.appendChild(card);
+            }
+        });
+    }
+
+    function filterVideos(category) {
+        // Update button states
+        const buttons = document.querySelectorAll('.filter-btn');
+        buttons.forEach(btn => {
+            if (btn.innerText === category) btn.classList.add('active');
+            else btn.classList.remove('active');
+        });
+
+        renderVideos(category);
+    }
+
+    function changeVideo(url, title) {
+        document.getElementById('main-video').src = url;
+        document.getElementById('video-title').innerText = "Now Playing: " + title;
+
+        // Scroll to player smoothly
+        document.querySelector('.main').scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Initial Render
+    window.onload = () => renderVideos();
 </script>
 
 </body>
