@@ -1,300 +1,308 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Start Quiz | SciSparkQuiz</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>SciSparkQuiz | Quiz Session</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: radial-gradient(circle at top, #003a5f, #020b1a); 
+            color: white; 
+            min-height: 100vh; 
+            display: flex;
+            overflow: hidden; 
+        }
 
-<style>
-* { margin:0; padding:0; box-sizing:border-box; }
+        /* ===== SIDEBAR (Common Nav Bar) ===== */
+        .sidebar { 
+            width: 260px; 
+            background: #010816; 
+            padding: 25px; 
+            border-right: 1px solid rgba(0, 229, 255, 0.1); 
+            flex-shrink: 0; 
+        }
+        .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 40px; }
+        .brand-title { font-family: 'Orbitron', sans-serif; color: #00e5ff; font-size: 20px; }
+        
+        .menu-section { font-size: 10px; text-transform: uppercase; color: rgba(255,255,255,0.3); margin: 20px 0 8px; letter-spacing: 1px; }
+        .menu a { 
+            display: block; padding: 14px; margin-bottom: 12px; border-radius: 12px; 
+            text-decoration: none; color: #e0f7ff; background: rgba(255,255,255,0.05); 
+            transition: 0.3s; font-size: 14px;
+        }
+        .menu a:hover, .menu a.active { background: rgba(0,229,255,0.25); color: #fff; }
 
-body{
-    font-family:'Poppins',sans-serif;
-    background: radial-gradient(circle at top,#003a5f,#020b1a);
-    color:white;
-    height:100vh;
-    overflow:hidden;
-}
+        .main { flex: 1; padding: 40px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 
-.container{
-    display:flex;
-    height:100vh;
-}
+        /* Quiz Card Styling - Matches Screenshot */
+        .glass-card { 
+            width: 100%; 
+            max-width: 820px; 
+            background: rgba(255, 255, 255, 0.04); 
+            backdrop-filter: blur(10px); 
+            padding: 50px; 
+            border-radius: 40px; 
+            border: 1px solid rgba(0, 229, 255, 0.15); 
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        .quiz-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 30px; 
+        }
+        
+        h1 { font-family: 'Orbitron', sans-serif; font-size: 28px; color: #00e5ff; letter-spacing: 1px; }
+        
+        /* Badges - Matches Screenshot */
+        .stats-bar { display: flex; gap: 15px; }
+        .stat-badge { 
+            background: rgba(0, 229, 255, 0.1); 
+            border: 1px solid rgba(0, 229, 255, 0.3); 
+            padding: 8px 18px; 
+            border-radius: 12px; 
+            font-family: 'Orbitron', sans-serif; 
+            color: #00e5ff; 
+            font-size: 13px;
+        }
 
-/* ===== COMMON SIDEBAR ===== */
-.sidebar{
-    width:260px;
-    background:linear-gradient(180deg,#051a30,#020b1a);
-    padding:25px;
-    border-right:1px solid rgba(0,229,255,0.1);
-    flex-shrink:0;
-}
+        /* Progress Divider */
+        .divider { width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 10px; margin-bottom: 40px; position: relative; overflow: hidden; }
+        .progress-fill { height: 100%; background: #00e5ff; width: 0%; transition: width 0.4s; }
 
-.brand-title{
-    font-family:'Orbitron',sans-serif;
-    color:#00e5ff;
-    font-size:20px;
-    margin-bottom:40px;
-}
+        /* Setup Form */
+        .setup-form { display: flex; flex-direction: column; gap: 20px; }
+        select {
+            background: rgba(5, 26, 48, 0.8);
+            border: 1px solid rgba(0, 229, 255, 0.2);
+            color: white;
+            padding: 16px;
+            border-radius: 15px;
+            font-size: 16px;
+            outline: none;
+            cursor: pointer;
+        }
 
-.menu-section{
-    font-size:10px;
-    text-transform:uppercase;
-    color:rgba(255,255,255,0.3);
-    margin:20px 0 8px;
-    letter-spacing:1px;
-}
+        .content-section { display: none; }
+        .content-section.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-.menu a{
-    display:block;
-    padding:12px 14px;
-    margin-bottom:8px;
-    border-radius:12px;
-    text-decoration:none;
-    color:#e0f7ff;
-    background:rgba(255,255,255,0.05);
-    transition:0.3s;
-    font-size:14px;
-}
+        .question-text { font-size: 22px; margin-bottom: 30px; line-height: 1.5; font-weight: 500; }
 
-.menu a:hover,
-.menu a.active{
-    background:rgba(0,229,255,0.25);
-    transform:translateX(6px);
-    color:#fff;
-}
+        .options-grid { display: grid; gap: 15px; }
+        .option { 
+            padding: 18px 25px; 
+            background: rgba(255, 255, 255, 0.05); 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            border-radius: 18px; 
+            cursor: pointer; 
+            transition: 0.2s; 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+        }
+        .option:hover:not(.locked) { background: rgba(0, 229, 255, 0.1); border-color: #00e5ff; }
+        .option.correct { background: rgba(46, 204, 113, 0.2); border-color: #2ecc71; }
+        .option.wrong { background: rgba(231, 76, 60, 0.2); border-color: #e74c3c; }
 
-/* ===== MAIN CONTENT ===== */
-.main{
-    flex:1;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    overflow-y:auto;
-    padding:40px;
-}
+        /* Navigation Controls - Pill Buttons from Screenshot */
+        .nav-controls { display: flex; justify-content: space-between; margin-top: 50px; }
+        .btn-pill { 
+            padding: 14px 40px; 
+            border-radius: 30px; 
+            border: none; 
+            font-family: 'Poppins', sans-serif; 
+            font-weight: 700; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px;
+            transition: 0.3s;
+        }
+        .btn-prev { background: rgba(255, 255, 255, 0.1); color: white; }
+        .btn-prev:hover:not(:disabled) { background: rgba(255, 255, 255, 0.2); }
+        .btn-next { background: #00e5ff; color: #020b1a; }
+        .btn-next:hover:not(:disabled) { background: #fff; transform: translateX(5px); }
+        .btn-pill:disabled { opacity: 0.3; cursor: not-allowed; }
 
-.main::-webkit-scrollbar{width:8px;}
-.main::-webkit-scrollbar-thumb{
-    background:rgba(0,229,255,0.3);
-    border-radius:10px;
-}
-
-/* ===== PANEL ===== */
-.search-panel{
-    background:rgba(255,255,255,0.05);
-    backdrop-filter:blur(10px);
-    padding:40px 60px;
-    border-radius:20px;
-    width:100%;
-    max-width:700px;
-    box-shadow:0 10px 30px rgba(0,0,0,0.5);
-    border:1px solid rgba(0,229,255,0.15);
-}
-
-h1{
-    font-family:'Orbitron',sans-serif;
-    color:#00e5ff;
-    margin-bottom:30px;
-    text-align:center;
-}
-
-label{
-    display:block;
-    margin-bottom:8px;
-    color:#9adfff;
-    font-size:14px;
-}
-
-select{
-    width:100%;
-    padding:12px;
-    border-radius:8px;
-    border:1px solid rgba(255,255,255,0.2);
-    background:#051a30;
-    color:#fff;
-    margin-bottom:20px;
-    font-family:'Poppins',sans-serif;
-}
-
-select:focus{
-    outline:none;
-    border-color:#00e5ff;
-}
-
-.error-msg{
-    color:#ff6b6b;
-    font-size:13px;
-    margin-bottom:15px;
-    display:none;
-}
-
-.loading-text{
-    color:#9adfff;
-    font-size:13px;
-    text-align:center;
-    margin-bottom:20px;
-    display:none;
-}
-
-button{
-    width:100%;
-    padding:14px;
-    border-radius:30px;
-    border:none;
-    background:#00e5ff;
-    color:#020b1a;
-    font-weight:bold;
-    cursor:pointer;
-    font-family:'Poppins',sans-serif;
-    font-size:15px;
-    transition:0.3s;
-}
-
-button:hover:not(:disabled){
-    background:#fff;
-    box-shadow:0 0 20px rgba(0,229,255,0.4);
-}
-
-button:disabled{
-    background:#1a3044;
-    cursor:not-allowed;
-    color:#5a8aa0;
-}
-</style>
+        .feedback { margin-top: 20px; font-weight: 600; text-align: center; font-family: 'Orbitron', sans-serif; height: 24px; }
+    </style>
 </head>
-
 <body>
 
-<div class="container">
-
-    <!-- ===== COMMON NAVIGATION ===== -->
-    <div class="sidebar">
-        <div class="brand-title">GRAVITON</div>
-
-        <div class="menu">
-
-            <div class="menu-section">Main</div>
-            <a href="{{ url_for('home') }}">🏠 Home</a>
-            <a href="{{ url_for('videos') }}">📹 Videos</a>
-
-            <div class="menu-section">Staff</div>
-            <a href="{{ url_for('make_quiz') }}">📝 Create Quiz</a>
-            <a href="{{ url_for('games') }}">🎮 Create Game</a>
-
-            <div class="menu-section">Students</div>
-            <a href="{{ url_for('category') }}" class="active">🚀 Start Quiz</a>
-            <a href="{{ url_for('start_games') }}">🕹️ Start Games</a>
-
-        </div>
+<div class="sidebar">
+    <div class="brand"><div class="brand-title">GRAVITON</div></div>
+    <div class="menu">
+        <div class="menu-section">Main</div>
+        <a href="/">🏠 Home</a>
+        <a href="/videos">📹 Videos</a>
+        <div class="menu-section">Staff</div>
+        <a href="/make-quiz">📝 Create Quiz</a>
+        <div class="menu-section">Students</div>
+        <a href="/quiz" class="active">🚀 Start Quiz</a>
     </div>
+</div>
 
-    <!-- ===== MAIN ===== -->
-    <div class="main">
-        <div class="search-panel">
+<div class="main">
+    <div class="glass-card">
+        <div class="quiz-header">
+            <h1 id="headerTitle">Science Challenge</h1>
+            <div class="stats-bar">
+                <div class="stat-badge">Time: <span id="timerDisplay">00:00</span></div>
+                <div class="stat-badge">Score: <span id="scoreDisplay">0</span></div>
+            </div>
+        </div>
 
-            <h1>🚀 Start Quiz</h1>
+        <div class="divider">
+            <div id="progressBar" class="progress-fill"></div>
+        </div>
 
-            <form action="/quiz" method="GET" onsubmit="return validateForm()">
-
-                <label>Select Category:</label>
-                <select id="categorySelect" name="category" required onchange="loadWorkshops()">
-                    <option value="" disabled selected>-- Choose Category --</option>
+        <!-- STEP 1: SELECTION -->
+        <div id="setupSection" class="content-section active">
+            <div class="setup-form">
+                <p style="color: rgba(255,255,255,0.6); margin-bottom: 10px;">Choose a subject and workshop to begin.</p>
+                <select id="categorySelect" onchange="loadWorkshops()">
+                    <option value="" selected disabled>-- Choose Category --</option>
                     <option value="Physics">Physics</option>
                     <option value="Chemistry">Chemistry</option>
                     <option value="Biology">Biology</option>
                     <option value="Technology">Technology</option>
                     <option value="General Science">General Science</option>
                 </select>
-
-                <label>Select Level:</label>
-                <select id="levelSelect" name="level" required onchange="loadWorkshops()">
-                    <option value="" disabled selected>-- Choose Level --</option>
-                    <option value="Upper Primary">Upper Primary</option>
-                    <option value="Lower Primary">Lower Primary</option>
-                    <option value="Upper Secondary">Upper Secondary</option>
-                    <option value="Lower Secondary">Lower Secondary</option>
+                <select id="workshopSelect" disabled>
+                    <option value="" selected disabled>Select subject first...</option>
                 </select>
-
-                <label>Select Workshop / Quiz:</label>
-                <div class="loading-text" id="loadingText">⏳ Loading workshops...</div>
-
-                <select id="workshopSelect" name="workshop_id" required disabled>
-                    <option value="" disabled selected>-- Select Category & Level First --</option>
-                </select>
-
-                <div class="error-msg" id="errorMsg">
-                    No workshops found for this selection. Please create a quiz first.
-                </div>
-
-                <button type="submit" id="submitBtn" disabled>
-                    START QUIZ ✔
+                <button class="btn-pill btn-next" id="startBtn" onclick="startQuizSession()" style="align-self: flex-end;" disabled>
+                    Next ➡
                 </button>
+            </div>
+        </div>
 
-            </form>
-
+        <!-- STEP 2: QUIZ -->
+        <div id="quizSection" class="content-section">
+            <div id="questionArea"></div>
+            <div class="feedback" id="feedback"></div>
+            <div class="nav-controls">
+                <button class="btn-pill btn-prev" id="prevBtn" onclick="navigate(-1)">← Previous</button>
+                <button class="btn-pill btn-next" id="nextBtn" onclick="navigate(1)">Next ➡</button>
+            </div>
         </div>
     </div>
-
 </div>
 
 <script>
-const categorySelect = document.getElementById("categorySelect");
-const levelSelect    = document.getElementById("levelSelect");
-const workshopSelect = document.getElementById("workshopSelect");
-const submitBtn      = document.getElementById("submitBtn");
-const errorMsg       = document.getElementById("errorMsg");
-const loadingText    = document.getElementById("loadingText");
+    let questions = [];
+    let currentIndex = 0;
+    let userAnswers = [];
+    let score = 0;
+    let secondsElapsed = 0;
+    let timerInterval;
 
-function loadWorkshops(){
-    const category = categorySelect.value;
-    const level    = levelSelect.value;
-    if(!category || !level) return;
-
-    workshopSelect.innerHTML = '<option disabled selected>-- Select Workshop --</option>';
-    workshopSelect.disabled  = true;
-    submitBtn.disabled       = true;
-    errorMsg.style.display   = "none";
-    loadingText.style.display = "block";
-
-    fetch(`/get-workshops/${encodeURIComponent(category)}?level=${encodeURIComponent(level)}`)
-    .then(res => res.json())
-    .then(data => {
-        loadingText.style.display = "none";
-
-        if(data.length === 0){
-            workshopSelect.innerHTML = '<option disabled>No workshops found</option>';
-            errorMsg.style.display = "block";
-            return;
-        }
-
-        data.forEach(w => {
-            const opt = document.createElement("option");
-            opt.value = w.id;
-            opt.textContent = w.title;
-            workshopSelect.appendChild(opt);
+    async function loadWorkshops() {
+        const cat = document.getElementById('categorySelect').value;
+        const wsSelect = document.getElementById('workshopSelect');
+        wsSelect.disabled = true;
+        wsSelect.innerHTML = '<option disabled selected>⏳ Loading...</option>';
+        
+        const res = await fetch(`/get-workshops/${encodeURIComponent(cat)}`);
+        const data = await res.json();
+        
+        wsSelect.innerHTML = '<option value="" disabled selected>-- Select a Workshop --</option>';
+        data.forEach(ws => {
+            const opt = document.createElement('option');
+            opt.value = ws.id;
+            opt.innerText = ws.title;
+            wsSelect.appendChild(opt);
         });
-
-        workshopSelect.disabled = false;
-    })
-    .catch(() => {
-        loadingText.style.display = "none";
-        workshopSelect.innerHTML = '<option disabled>Error loading workshops</option>';
-    });
-}
-
-workshopSelect.addEventListener("change",()=>{
-    submitBtn.disabled = !workshopSelect.value;
-});
-
-function validateForm(){
-    if(!workshopSelect.value){
-        alert("Please select a workshop.");
-        return false;
+        wsSelect.disabled = false;
     }
-    return true;
-}
+
+    document.getElementById('workshopSelect').addEventListener('change', () => {
+        document.getElementById('startBtn').disabled = !document.getElementById('workshopSelect').value;
+    });
+
+    async function startQuizSession() {
+        const wsId = document.getElementById('workshopSelect').value;
+        const wsTitle = document.getElementById('workshopSelect').options[document.getElementById('workshopSelect').selectedIndex].text;
+        
+        const res = await fetch(`/api/workshop-questions/${wsId}`);
+        if (!res.ok) { alert("Quiz data not found!"); return; }
+        
+        questions = await res.json();
+        if (questions.length === 0) { alert("No questions in this quiz!"); return; }
+
+        userAnswers = new Array(questions.length).fill(null);
+        document.getElementById('headerTitle').innerText = wsTitle;
+        document.getElementById('setupSection').classList.remove('active');
+        document.getElementById('quizSection').classList.add('active');
+        
+        renderQuestion();
+        startTimer();
+        updateUI();
+    }
+
+    function renderQuestion() {
+        const q = questions[currentIndex];
+        const area = document.getElementById('questionArea');
+        area.innerHTML = `
+            <p class="question-text">${currentIndex + 1}. ${q.text}</p>
+            <div class="options-grid">
+                ${['a','b','c','d'].map(l => `
+                    <div class="option ${userAnswers[currentIndex] === l.toUpperCase() ? (l.toUpperCase() === q.answer ? 'correct' : 'wrong') : ''}" 
+                         onclick="handleSelect('${l.toUpperCase()}')">
+                        <span style="font-weight:800; color:#00e5ff">${l.toUpperCase()}</span> ${q[l]}
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+
+    function handleSelect(ans) {
+        if (userAnswers[currentIndex] !== null) return;
+        const correct = questions[currentIndex].answer.toUpperCase();
+        userAnswers[currentIndex] = ans;
+        if (ans === correct) score += 10;
+        document.getElementById('scoreDisplay').innerText = score;
+        renderQuestion();
+        document.getElementById('feedback').innerText = (ans === correct) ? "🎉 Correct!" : `❌ Wrong! It was ${correct}`;
+        document.getElementById('feedback').style.color = (ans === correct) ? "#2ecc71" : "#e74c3c";
+    }
+
+    function navigate(step) {
+        if (currentIndex + step >= 0 && currentIndex + step < questions.length) {
+            currentIndex += step;
+            document.getElementById('feedback').innerText = "";
+            renderQuestion();
+            updateUI();
+        } else if (currentIndex + step === questions.length) {
+            finish();
+        }
+    }
+
+    function updateUI() {
+        document.getElementById('prevBtn').disabled = (currentIndex === 0);
+        document.getElementById('progressBar').style.width = ((currentIndex + 1) / questions.length * 100) + "%";
+        document.getElementById('nextBtn').innerHTML = (currentIndex === questions.length - 1) ? 'Finish ✔' : 'Next ➡';
+    }
+
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            secondsElapsed++;
+            const m = Math.floor(secondsElapsed / 60).toString().padStart(2, '0');
+            const s = (secondsElapsed % 60).toString().padStart(2, '0');
+            document.getElementById('timerDisplay').innerText = `${m}:${s}`;
+        }, 1000);
+    }
+
+    function finish() {
+        clearInterval(timerInterval);
+        const correctCount = userAnswers.filter((a, i) => a === questions[i].answer.toUpperCase()).length;
+        window.location.href = `/result?score=${correctCount}&total=${questions.length}`;
+    }
 </script>
 
 </body>

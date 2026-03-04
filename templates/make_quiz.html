@@ -50,7 +50,6 @@ input:focus, select:focus, textarea:focus {
 
 <!-- LEFT PANEL: Quiz Settings -->
 <div class="glass p-6 rounded-xl space-y-4">
-
     <h2 class="text-cyan-400 font-bold text-lg mb-2">Quiz Settings</h2>
 
     <input id="title" placeholder="Workshop / Quiz Title" class="w-full p-3 rounded">
@@ -64,13 +63,7 @@ input:focus, select:focus, textarea:focus {
         <option>General Science</option>
     </select>
 
-    <select id="level" class="w-full p-3 rounded">
-        <option value="">Select Level</option>
-        <option>Upper Primary</option>
-        <option>Lower Primary</option>
-        <option>Upper Secondary</option>
-        <option>Lower Secondary</option>
-    </select>
+    <!-- LEVEL SECTION REMOVED AS PER REQUEST -->
 
     <textarea id="desc" placeholder="Description (optional)"
         class="w-full p-3 rounded h-20 resize-none"></textarea>
@@ -92,29 +85,31 @@ input:focus, select:focus, textarea:focus {
     <!-- Existing Workshops List -->
     <div class="mt-6">
         <h3 class="text-cyan-400 font-bold mb-3">Existing Quizzes</h3>
-        {% if workshops %}
-            {% for ws in workshops %}
-            <div class="glass p-3 rounded-lg mb-2">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <div class="text-sm font-bold">{{ ws.title }}</div>
-                        <div class="text-xs text-cyan-300">{{ ws.category }} · {{ ws.target_level }}</div>
-                    </div>
-                    <div class="flex gap-2">
-                        <button onclick="editWorkshop({{ ws.id }})"
-                            class="text-cyan-400 text-xs hover:text-cyan-200">Edit</button>
-                        <a href="/delete-workshop/{{ ws.id }}"
-                           onclick="return confirm('Delete this quiz?')"
-                           class="text-red-400 text-xs hover:text-red-300">Delete</a>
+        <div id="workshopList">
+            <!-- Quizzes rendered here -->
+            {% if workshops %}
+                {% for ws in workshops %}
+                <div class="glass p-3 rounded-lg mb-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <div class="text-sm font-bold">{{ ws.title }}</div>
+                            <div class="text-xs text-cyan-300">{{ ws.category }}</div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="editWorkshop({{ ws.id }})"
+                                class="text-cyan-400 text-xs hover:text-cyan-200">Edit</button>
+                            <a href="/delete-workshop/{{ ws.id }}"
+                               onclick="return confirm('Delete this quiz?')"
+                               class="text-red-400 text-xs hover:text-red-300">Delete</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            {% endfor %}
-        {% else %}
-            <p class="text-white/40 text-sm">No quizzes created yet.</p>
-        {% endif %}
+                {% endfor %}
+            {% else %}
+                <p class="text-white/40 text-sm">No quizzes created yet.</p>
+            {% endif %}
+        </div>
     </div>
-
 </div>
 
 <!-- RIGHT PANEL: Questions Editor -->
@@ -151,7 +146,6 @@ let questions = [];
 let editWorkshopId = null;
 let editQuestionsData = [];
 
-/* ================= JSON UPLOAD ================= */
 document.getElementById("json-upload").addEventListener("change", function(e) {
     const file = e.target.files[0];
     if (!file) return;
@@ -172,7 +166,6 @@ document.getElementById("json-upload").addEventListener("change", function(e) {
                 d: q.d || q.option_d || "",
                 answer: (q.answer || q.correct_answer || "A").toUpperCase()
             }));
-
             render();
         } catch(err) {
             alert("JSON Parse Error");
@@ -181,7 +174,6 @@ document.getElementById("json-upload").addEventListener("change", function(e) {
     reader.readAsText(file);
 });
 
-/* ================= ADD BLANK ================= */
 function addBlankQuestion() {
     questions.push({ id: Date.now(), text: "", a: "", b: "", c: "", d: "", answer: "A" });
     render();
@@ -190,7 +182,6 @@ function addBlankQuestion() {
     }, 100);
 }
 
-/* ================= RENDER ================= */
 function render() {
     const container = document.getElementById("questions");
     container.innerHTML = "";
@@ -207,33 +198,19 @@ function render() {
     questions.forEach((q, index) => {
         const card = document.createElement("div");
         card.className = "glass p-4 rounded-xl mb-4";
-
         card.innerHTML = `
         <div class="flex justify-between items-center mb-3">
             <span class="font-bold text-cyan-400">Q${index + 1}</span>
             <button onclick="removeQ(${q.id})" class="text-red-400 text-sm hover:text-red-300">🗑 Delete</button>
         </div>
-
-        <input value="${escHtml(q.text)}"
-            placeholder="Question text"
-            oninput="update(${q.id},'text',this.value)"
-            class="w-full p-2 mb-3 rounded">
-
+        <input value="${escHtml(q.text)}" placeholder="Question text" oninput="update(${q.id},'text',this.value)" class="w-full p-2 mb-3 rounded">
         ${["A","B","C","D"].map(opt => `
         <div class="flex items-center gap-2 mb-2">
-            <button onclick="setAnswer(${q.id},'${opt}')"
-                class="answer-btn px-3 py-1 rounded font-bold text-sm bg-white/10 ${q.answer === opt ? 'active' : ''}">
-                ${opt}
-            </button>
-            <input value="${escHtml(q[opt.toLowerCase()])}"
-                placeholder="Option ${opt}"
-                oninput="update(${q.id},'${opt.toLowerCase()}',this.value)"
-                class="flex-1 p-2 rounded">
+            <button onclick="setAnswer(${q.id},'${opt}')" class="answer-btn px-3 py-1 rounded font-bold text-sm bg-white/10 ${q.answer === opt ? 'active' : ''}">${opt}</button>
+            <input value="${escHtml(q[opt.toLowerCase()])}" placeholder="Option ${opt}" oninput="update(${q.id},'${opt.toLowerCase()}',this.value)" class="flex-1 p-2 rounded">
         </div>
         `).join("")}
-        <p class="text-xs text-white/40 mt-1">Click A/B/C/D to mark the correct answer</p>
         `;
-
         container.appendChild(card);
     });
 }
@@ -257,16 +234,14 @@ function removeQ(id) {
     render();
 }
 
-/* ================= PUBLISH QUIZ ================= */
 document.getElementById("publish-btn").addEventListener("click", async function() {
-    const title       = document.getElementById("title").value.trim();
-    const category    = document.getElementById("category").value;
-    const level       = document.getElementById("level").value;
+    const title = document.getElementById("title").value.trim();
+    const category = document.getElementById("category").value;
     const description = document.getElementById("desc").value.trim();
-    const status      = document.getElementById("status");
+    const status = document.getElementById("status");
 
-    if (!title || !category || !level || questions.length === 0) {
-        alert("Please fill in title, category, level and add at least one question.");
+    if (!title || !category || questions.length === 0) {
+        alert("Please fill in title, category, and add questions.");
         return;
     }
 
@@ -277,19 +252,11 @@ document.getElementById("publish-btn").addEventListener("click", async function(
         const response = await fetch("/api/publish-workshop", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ title, description, category, level, questions })
+            body: JSON.stringify({ title, description, category, questions })
         });
-
         const result = await response.json();
-
         if (result.success) {
             status.innerHTML = "✅ Quiz Published!";
-            questions = [];
-            render();
-            document.getElementById("title").value = "";
-            document.getElementById("desc").value = "";
-            document.getElementById("category").value = "";
-            document.getElementById("level").value = "";
             setTimeout(() => location.reload(), 1500);
         } else {
             status.innerHTML = "❌ Failed: " + (result.error || "Unknown error");
@@ -297,17 +264,13 @@ document.getElementById("publish-btn").addEventListener("click", async function(
     } catch(error) {
         status.innerHTML = "❌ Server error";
     }
-
     this.disabled = false;
 });
 
-/* ================= EDIT WORKSHOP ================= */
 async function editWorkshop(workshopId) {
     editWorkshopId = workshopId;
-    document.getElementById("editStatus").innerHTML = "";
-
     try {
-        const res  = await fetch(`/api/workshop-questions/${workshopId}`);
+        const res = await fetch(`/api/workshop-questions/${workshopId}`);
         editQuestionsData = await res.json();
         renderEditModal();
         document.getElementById("editModal").classList.remove("hidden");
@@ -319,39 +282,30 @@ async function editWorkshop(workshopId) {
 function renderEditModal() {
     const container = document.getElementById("editQuestions");
     container.innerHTML = "";
-
     editQuestionsData.forEach((q, index) => {
         const div = document.createElement("div");
         div.className = "glass p-3 rounded-lg";
         div.innerHTML = `
         <div class="text-xs text-cyan-400 font-bold mb-1">Q${index + 1}</div>
-        <input value="${escHtml(q.text)}" placeholder="Question"
-            oninput="editQuestionsData[${index}].text = this.value"
-            class="w-full p-2 mb-2 rounded text-sm">
+        <input value="${escHtml(q.text)}" oninput="editQuestionsData[${index}].text = this.value" class="w-full p-2 mb-2 rounded text-sm">
         ${["a","b","c","d"].map(opt => `
             <div class="flex items-center gap-2 mb-1">
                 <span class="text-xs text-white/60 w-4">${opt.toUpperCase()}</span>
-                <input value="${escHtml(q[opt])}" placeholder="Option ${opt.toUpperCase()}"
-                    oninput="editQuestionsData[${index}]['${opt}'] = this.value"
-                    class="flex-1 p-1.5 rounded text-sm">
+                <input value="${escHtml(q[opt])}" oninput="editQuestionsData[${index}]['${opt}'] = this.value" class="flex-1 p-1.5 rounded text-sm">
             </div>
         `).join("")}
-        <div class="text-xs mt-1 text-white/50">Correct: <strong class="text-cyan-400">${q.answer}</strong></div>
         `;
         container.appendChild(div);
     });
 }
 
-function closeEdit() {
-    document.getElementById("editModal").classList.add("hidden");
-}
+function closeEdit() { document.getElementById("editModal").classList.add("hidden"); }
 
 async function saveEdit() {
     const status = document.getElementById("editStatus");
     status.innerHTML = "⏳ Saving...";
-
     try {
-        const res    = await fetch(`/api/update-workshop/${editWorkshopId}`, {
+        const res = await fetch(`/api/update-workshop/${editWorkshopId}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ questions: editQuestionsData })
@@ -360,12 +314,8 @@ async function saveEdit() {
         if (result.success) {
             status.innerHTML = "✅ Saved!";
             setTimeout(closeEdit, 1000);
-        } else {
-            status.innerHTML = "❌ Failed";
         }
-    } catch(e) {
-        status.innerHTML = "❌ Server error";
-    }
+    } catch(e) { status.innerHTML = "❌ Error"; }
 }
 </script>
 
