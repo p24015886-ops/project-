@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SciSpark | Create Game</title>
+<title>SciSpark | Start Games</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 
@@ -19,277 +19,395 @@ body {
     backdrop-filter: blur(12px);
     border: 1px solid rgba(255,255,255,0.1);
 }
-input, select, textarea {
+select, input {
     background: #051a30;
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
     color: white;
 }
-input:focus, select:focus, textarea:focus {
-    outline: none;
-    border-color: #00e5ff;
+select:focus { outline: none; border-color: #00e5ff; }
+
+.option-btn {
+    background: #05263f;
+    padding: 14px 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.25s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid rgba(0,229,255,0.1);
 }
-.answer-btn.active { background: #00e5ff !important; color: black !important; }
+
+.option-btn:hover {
+    background: rgba(0,229,255,0.2);
+    border-color: #00e5ff;
+    transform: translateX(4px);
+}
+
+.option-btn.correct {
+    background: rgba(0,200,83,0.25) !important;
+    border-color: #00c853 !important;
+}
+
+.option-btn.wrong {
+    background: rgba(213,0,0,0.25) !important;
+    border-color: #d50000 !important;
+}
+
+.option-btn.revealed {
+    background: rgba(0,200,83,0.15) !important;
+    border-color: #00c853 !important;
+}
+
+.opt-label {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(0,229,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 13px;
+    flex-shrink: 0;
+}
 </style>
 </head>
 
 <body class="p-6">
 
-<!-- Top Nav -->
-<div class="flex items-center justify-between mb-8">
+<!-- HEADER -->
+<div class="flex justify-between items-center mb-6">
     <button onclick="location.href='/'" class="bg-white/10 hover:bg-white/20 px-4 py-2 rounded text-sm">
         ← Home
     </button>
-    <h1 class="text-2xl font-bold text-cyan-400">🎮 Create Game</h1>
-    <a href="/start-games" class="bg-cyan-400 text-black px-4 py-2 rounded font-bold text-sm hover:bg-cyan-300 transition">
-        ▶ Start Games
-    </a>
+
+    <h1 class="text-2xl font-bold text-cyan-400">🕹️ Start Games</h1>
+
+    <div id="scoreBoard" class="text-cyan-300 font-bold">
+        Score: 0
+    </div>
 </div>
 
-<!-- Sidebar-style layout: left = settings, right = questions -->
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- SETUP SCREEN -->
+<div id="setupScreen" class="glass p-6 rounded-xl max-w-xl mx-auto space-y-4">
 
-<!-- LEFT PANEL: Game Settings -->
-<div class="glass p-6 rounded-xl space-y-4">
+<h2 class="text-cyan-400 font-bold text-center mb-2">Select Game</h2>
 
-    <h2 class="text-cyan-400 font-bold text-lg mb-2">Game Settings</h2>
+<select id="setupCategory" class="w-full p-3 rounded" onchange="loadGames()">
+<option value="">Select Category</option>
+<option>Physics</option>
+<option>Chemistry</option>
+<option>Biology</option>
+<option>Technology</option>
+<option>General Science</option>
+</select>
 
-    <input id="title" placeholder="Game Title" class="w-full p-3 rounded">
+<select id="setupLevel" class="w-full p-3 rounded" onchange="loadGames()">
+<option value="">Select Level</option>
+<option>Upper Primary</option>
+<option>Lower Primary</option>
+<option>Upper Secondary</option>
+<option>Lower Secondary</option>
+</select>
 
-    <select id="category" class="w-full p-3 rounded">
-        <option value="">Select Category</option>
-        <option>Physics</option>
-        <option>Chemistry</option>
-        <option>Biology</option>
-        <option>Technology</option>
-        <option>General Science</option>
-    </select>
+<div id="loadingGames" class="text-center text-cyan-300 text-sm hidden">
+⏳ Loading games...
+</div>
 
-    <select id="level" class="w-full p-3 rounded">
-        <option value="">Select Level</option>
-        <option>Upper Primary</option>
-        <option>Lower Primary</option>
-        <option>Upper Secondary</option>
-        <option>Lower Secondary</option>
-    </select>
+<select id="gameSelect" class="w-full p-3 rounded" disabled>
+<option value="" disabled selected>
+-- Select Category & Level First --
+</option>
+</select>
 
-    <select id="timeLimit" class="w-full p-3 rounded">
-        <option value="0">No Timer</option>
-        <option value="120">2 Minutes</option>
-        <option value="300">5 Minutes</option>
-        <option value="600">10 Minutes</option>
-    </select>
+<div id="noGamesMsg" class="text-red-400 text-sm text-center hidden">
+No games found for this selection.
+</div>
 
-    <textarea id="desc" placeholder="Game Description (optional)" class="w-full p-3 rounded h-20 resize-none"></textarea>
-
-    <!-- JSON Upload -->
-    <div>
-        <label class="text-sm text-cyan-300 block mb-1">Upload Questions (JSON)</label>
-        <input type="file" id="json-upload" accept=".json" class="w-full text-sm">
-        <p class="text-xs text-white/40 mt-1">Same format as quiz JSON</p>
-    </div>
-
-    <button id="publish-btn" class="w-full bg-cyan-400 text-black py-3 rounded font-bold hover:bg-cyan-300 transition">
-        Create Game
-    </button>
-
-    <div id="status" class="text-sm mt-2 text-center"></div>
-
-    <!-- Existing Games List -->
-    <div class="mt-6">
-        <h3 class="text-cyan-400 font-bold mb-3">Existing Games</h3>
-        {% if games %}
-            {% for game in games %}
-            <div class="glass p-3 rounded-lg mb-2 flex justify-between items-center">
-                <div>
-                    <div class="text-sm font-bold">{{ game.title }}</div>
-                    <div class="text-xs text-cyan-300">{{ game.category }} · {{ game.target_level }}</div>
-                </div>
-                <a href="/delete-game/{{ game.id }}" 
-                   onclick="return confirm('Delete this game?')"
-                   class="text-red-400 text-xs hover:text-red-300">Delete</a>
-            </div>
-            {% endfor %}
-        {% else %}
-            <p class="text-white/40 text-sm">No games created yet.</p>
-        {% endif %}
-    </div>
+<button onclick="startGame()" id="startBtn"
+class="w-full bg-cyan-400 text-black py-3 rounded font-bold hover:bg-cyan-300 transition disabled:opacity-40 disabled:cursor-not-allowed"
+disabled>
+▶ Start Game
+</button>
 
 </div>
 
-<!-- RIGHT PANEL: Questions -->
-<div class="lg:col-span-2">
-    <div class="flex justify-between items-center mb-4">
-        <h2 class="text-lg text-cyan-400">Questions (<span id="count">0</span>)</h2>
-        <button onclick="addBlankQuestion()" class="bg-white/10 hover:bg-white/20 px-4 py-2 rounded text-sm">
-            + Add Question
-        </button>
-    </div>
-    <div id="questions"></div>
+<!-- GAME SCREEN -->
+<div id="gameScreen" class="hidden max-w-3xl mx-auto">
+
+<div class="glass p-6 rounded-xl">
+
+<!-- QUESTION HEADER -->
+<div class="flex justify-between items-center mb-3">
+<div id="questionNumber" class="text-cyan-300 text-sm font-bold"></div>
 </div>
 
+<!-- PROGRESS BAR -->
+<div class="w-full bg-white/10 rounded-full h-1.5 mb-5">
+<div id="progressBar"
+class="h-1.5 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500"
+style="width:0%">
+</div>
+</div>
+
+<!-- IMAGE -->
+<img id="questionImage"
+class="mb-5 rounded-xl max-h-64 mx-auto hidden shadow-lg border border-white/10">
+
+<!-- QUESTION -->
+<h2 id="questionText"
+class="text-xl mb-5 font-medium leading-relaxed"></h2>
+
+<!-- OPTIONS -->
+<div id="options" class="space-y-3"></div>
+
+<!-- FEEDBACK -->
+<div id="feedback"
+class="mt-4 font-bold text-center text-lg min-h-8"></div>
+
+<!-- NAVIGATION -->
+<div class="flex justify-between mt-6">
+
+<button onclick="prevQuestion()"
+class="bg-white/10 hover:bg-white/20 px-5 py-2 rounded font-bold">
+← Previous
+</button>
+
+<button onclick="revealAnswer()" id="revealBtn"
+class="bg-yellow-400 text-black px-5 py-2 rounded font-bold hover:bg-yellow-300">
+👁 Show Answer
+</button>
+
+<button onclick="nextQuestion()"
+class="bg-cyan-400 text-black px-5 py-2 rounded font-bold hover:bg-cyan-300">
+Next →
+</button>
+
+</div>
+
+</div>
+</div>
+
+<!-- FINAL SCREEN -->
+<div id="finalScreen" class="hidden text-center mt-16">
+
+<div class="glass p-10 rounded-2xl max-w-md mx-auto">
+
+<div class="text-6xl mb-4">🏆</div>
+
+<h2 id="finalScore"
+class="text-3xl text-cyan-400 font-bold mb-3"></h2>
+
+<p id="performanceMessage"
+class="text-lg mb-8 text-white/80"></p>
+
+<button onclick="location.reload()"
+class="bg-cyan-400 text-black px-8 py-3 rounded-full font-bold hover:bg-cyan-300">
+Play Again
+</button>
+
+</div>
 </div>
 
 <script>
-let questions = [];
 
-/* ================= JSON UPLOAD ================= */
-document.getElementById("json-upload").addEventListener("change", function(e) {
-    const file = e.target.files[0];
-    if (!file) return;
+let questions = []
+let currentIndex = 0
+let score = 0
+let answered = []
 
-    const reader = new FileReader();
-    reader.onload = function(event) {
-        try {
-            const json = JSON.parse(event.target.result);
-            let data = Array.isArray(json) ? json : (Array.isArray(json.questions) ? json.questions : null);
+async function loadGames(){
 
-            if (!data) { alert("Invalid JSON structure"); return; }
+const category=document.getElementById("setupCategory").value
+const level=document.getElementById("setupLevel").value
 
-            questions = data.map((q, i) => ({
-                id: Date.now() + i,
-                text: q.question || q.text || "",
-                a: q.a || q.option_a || "",
-                b: q.b || q.option_b || "",
-                c: q.c || q.option_c || "",
-                d: q.d || q.option_d || "",
-                answer: (q.answer || q.correct_answer || "A").toUpperCase(),
-                image: q.image || ""
-            }));
+if(!category || !level) return
 
-            render();
-        } catch(err) {
-            alert("JSON Parse Error");
-        }
-    };
-    reader.readAsText(file);
-});
+const gameSelect=document.getElementById("gameSelect")
+const loadingEl=document.getElementById("loadingGames")
+const startBtn=document.getElementById("startBtn")
 
-/* ================= ADD BLANK QUESTION ================= */
-function addBlankQuestion() {
-    questions.push({
-        id: Date.now(),
-        text: "", a: "", b: "", c: "", d: "",
-        answer: "A", image: ""
-    });
-    render();
-    // Scroll to bottom
-    setTimeout(() => {
-        document.getElementById("questions").lastElementChild?.scrollIntoView({ behavior: "smooth" });
-    }, 100);
+gameSelect.innerHTML='<option>Loading...</option>'
+gameSelect.disabled=true
+startBtn.disabled=true
+
+loadingEl.classList.remove("hidden")
+
+const res=await fetch(`/get-games/${encodeURIComponent(category)}?level=${encodeURIComponent(level)}`)
+const data=await res.json()
+
+loadingEl.classList.add("hidden")
+
+gameSelect.innerHTML='<option disabled selected>-- Select Game --</option>'
+
+data.forEach(g=>{
+let opt=document.createElement("option")
+opt.value=g.id
+opt.textContent=g.title
+gameSelect.appendChild(opt)
+})
+
+gameSelect.disabled=false
+
+gameSelect.addEventListener("change",()=>{
+startBtn.disabled=!gameSelect.value
+})
+
 }
 
-/* ================= RENDER ================= */
-function render() {
-    const container = document.getElementById("questions");
-    container.innerHTML = "";
-    document.getElementById("count").innerText = questions.length;
+async function startGame(){
 
-    questions.forEach((q, index) => {
-        const card = document.createElement("div");
-        card.className = "glass p-4 rounded-xl mb-4";
+const category=document.getElementById("setupCategory").value
+const level=document.getElementById("setupLevel").value
+const workshopId=document.getElementById("gameSelect").value
 
-        card.innerHTML = `
-        <div class="flex justify-between items-center mb-3">
-            <span class="font-bold text-cyan-400">Q${index + 1}</span>
-            <button onclick="removeQ(${q.id})" class="text-red-400 text-sm hover:text-red-300">🗑 Delete</button>
-        </div>
+const url=`/api/game-questions?category=${encodeURIComponent(category)}&level=${encodeURIComponent(level)}&workshop_id=${workshopId}`
 
-        <input value="${escHtml(q.text)}"
-            placeholder="Question text"
-            oninput="update(${q.id},'text',this.value)"
-            class="w-full p-2 mb-3 rounded">
+const response=await fetch(url)
 
-        <div class="mb-3">
-            <label class="text-xs text-cyan-300 block mb-1">Image URL (optional — for projector display)</label>
-            <input value="${escHtml(q.image || '')}"
-                placeholder="https://example.com/image.jpg"
-                oninput="update(${q.id},'image',this.value)"
-                class="w-full p-2 rounded">
-        </div>
+questions=await response.json()
 
-        ${["A","B","C","D"].map(opt => `
-        <div class="flex items-center gap-2 mb-2">
-            <button onclick="setAnswer(${q.id},'${opt}')"
-                class="answer-btn px-3 py-1 rounded font-bold text-sm bg-white/10 ${q.answer === opt ? 'active' : ''}">
-                ${opt}
-            </button>
-            <input value="${escHtml(q[opt.toLowerCase()])}"
-                placeholder="Option ${opt}"
-                oninput="update(${q.id},'${opt.toLowerCase()}',this.value)"
-                class="flex-1 p-2 rounded">
-        </div>
-        `).join("")}
-        <p class="text-xs text-white/40 mt-1">Click A/B/C/D to mark correct answer</p>
-        `;
+currentIndex=0
+score=0
+answered=new Array(questions.length).fill(false)
 
-        container.appendChild(card);
-    });
+document.getElementById("setupScreen").classList.add("hidden")
+document.getElementById("gameScreen").classList.remove("hidden")
+
+updateScore()
+showQuestion()
+
 }
 
-function escHtml(str) {
-    return (str || '').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+function showQuestion(){
+
+const q=questions[currentIndex]
+
+document.getElementById("questionNumber").innerText=
+`Question ${currentIndex+1} / ${questions.length}`
+
+document.getElementById("progressBar").style.width=
+((currentIndex+1)/questions.length)*100+"%"
+
+document.getElementById("questionText").innerText=q.question
+document.getElementById("feedback").innerText=""
+
+const optionsDiv=document.getElementById("options")
+optionsDiv.innerHTML=""
+
+["A","B","C","D"].forEach(letter=>{
+
+const text=q["option_"+letter.toLowerCase()]
+
+if(!text) return
+
+const div=document.createElement("div")
+
+div.className="option-btn"
+div.id="opt_"+letter
+
+div.innerHTML=
+`<div class="opt-label">${letter}</div><span>${text}</span>`
+
+div.onclick=()=>selectAnswer(letter,div)
+
+optionsDiv.appendChild(div)
+
+})
+
 }
 
-function update(id, field, value) {
-    const q = questions.find(q => q.id === id);
-    if (q) { q[field] = value; }
+function selectAnswer(letter,element){
+
+if(answered[currentIndex]) return
+
+const correct=questions[currentIndex].correct_answer
+
+answered[currentIndex]=true
+
+if(letter===correct){
+
+element.classList.add("correct")
+score++
+
+document.getElementById("feedback").innerHTML=
+'<span style="color:#00c853">🎉 Correct!</span>'
+
+}else{
+
+element.classList.add("wrong")
+
+document.getElementById("feedback").innerHTML=
+'<span style="color:#ff5252">❌ Wrong!</span>'
+
+document.getElementById("opt_"+correct)?.classList.add("revealed")
+
 }
 
-function setAnswer(id, answer) {
-    const q = questions.find(q => q.id === id);
-    if (q) { q.answer = answer; render(); }
+document.querySelectorAll(".option-btn").forEach(o=>o.onclick=null)
+
+updateScore()
+
 }
 
-function removeQ(id) {
-    questions = questions.filter(q => q.id !== id);
-    render();
+function revealAnswer(){
+
+const correct=questions[currentIndex].correct_answer
+
+document.getElementById("opt_"+correct)?.classList.add("revealed")
+
+document.getElementById("feedback").innerHTML=
+`<span style="color:#00c853">Answer: ${correct}</span>`
+
+answered[currentIndex]=true
+
+document.querySelectorAll(".option-btn").forEach(o=>o.onclick=null)
+
 }
 
-/* ================= PUBLISH GAME ================= */
-document.getElementById("publish-btn").addEventListener("click", async function() {
-    const title       = document.getElementById("title").value.trim();
-    const category    = document.getElementById("category").value;
-    const level       = document.getElementById("level").value;
-    const description = document.getElementById("desc").value.trim();
-    const time_limit  = parseInt(document.getElementById("timeLimit").value);
-    const status      = document.getElementById("status");
+function nextQuestion(){
 
-    if (!title || !category || !level || questions.length === 0) {
-        alert("Please fill in title, category, level and add at least one question.");
-        return;
-    }
+if(currentIndex<questions.length-1){
 
-    status.innerHTML = "⏳ Creating game...";
-    this.disabled = true;
+currentIndex++
+showQuestion()
 
-    try {
-        const response = await fetch("/api/publish-game", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ title, description, category, level, time_limit, questions })
-        });
+}else{
 
-        const result = await response.json();
+endGame()
 
-        if (result.success) {
-            status.innerHTML = "✅ Game Created Successfully!";
-            questions = [];
-            render();
-            document.getElementById("title").value = "";
-            document.getElementById("desc").value = "";
-            document.getElementById("category").value = "";
-            document.getElementById("level").value = "";
-            // Reload to show new game in list
-            setTimeout(() => location.reload(), 1500);
-        } else {
-            status.innerHTML = "❌ Failed: " + (result.error || "Unknown error");
-        }
-    } catch(error) {
-        status.innerHTML = "❌ Server error";
-    }
+}
 
-    this.disabled = false;
-});
+}
+
+function prevQuestion(){
+
+if(currentIndex>0){
+
+currentIndex--
+showQuestion()
+
+}
+
+}
+
+function updateScore(){
+
+document.getElementById("scoreBoard").innerText="Score: "+score
+
+}
+
+function endGame(){
+
+document.getElementById("gameScreen").classList.add("hidden")
+document.getElementById("finalScreen").classList.remove("hidden")
+
+document.getElementById("finalScore").innerText=
+`Score: ${score} / ${questions.length}`
+
+}
+
 </script>
 
 </body>

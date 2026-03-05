@@ -16,7 +16,7 @@
             overflow: hidden; 
         }
 
-        /* ===== SIDEBAR (Matches Screenshot) ===== */
+        /* ===== SIDEBAR ===== */
         .sidebar { 
             width: 260px; 
             background: #010816; 
@@ -156,7 +156,7 @@
         <div class="quiz-header">
             <h1 id="headerTitle">Science Challenge</h1>
             <div class="stats-bar">
-                <div class="stat-badge">Time: <span id="timerDisplay">00:00</span></div>
+                <!-- Removed Timer Display -->
                 <div class="stat-badge">Score: <span id="scoreDisplay">0</span></div>
             </div>
         </div>
@@ -208,8 +208,6 @@
     let currentIndex = 0;
     let userAnswers = [];
     let score = 0;
-    let secondsElapsed = 0;
-    let timerInterval;
 
     /* Load Workshops when Category Changes */
     async function loadWorkshops() {
@@ -261,11 +259,10 @@
             document.getElementById('quizSection').classList.add('active');
             
             renderQuestion();
-            startTimer();
             updateUI();
         } catch(e) {
             console.error(e);
-            alert("Error: Make sure you updated your app.py with the new /api/workshop-questions route!");
+            alert("Error loading quiz questions.");
         }
     }
 
@@ -281,7 +278,7 @@
                     const correct = q.answer.toUpperCase();
                     let cls = "";
                     if(isSelected) cls = (letter === correct) ? 'correct' : 'wrong';
-                    if(userAnswers[currentIndex] !== null && letter === correct) cls = 'correct'; // Show correct if already answered
+                    if(userAnswers[currentIndex] !== null && letter === correct) cls = 'correct';
 
                     return `
                         <div class="option ${cls} ${userAnswers[currentIndex] !== null ? 'locked' : ''}" 
@@ -301,8 +298,8 @@
         userAnswers[currentIndex] = ans;
         
         if (ans === correct) {
-            score += 1; // Increment base score
-            document.getElementById('scoreDisplay').innerText = score * 10; // Visual display
+            score += 1;
+            document.getElementById('scoreDisplay').innerText = score * 10;
         }
         
         renderQuestion();
@@ -328,17 +325,7 @@
         document.getElementById('nextBtn').innerHTML = (currentIndex === questions.length - 1) ? 'Finish ✔' : 'Next ➡';
     }
 
-    function startTimer() {
-        timerInterval = setInterval(() => {
-            secondsElapsed++;
-            const m = Math.floor(secondsElapsed / 60).toString().padStart(2, '0');
-            const s = (secondsElapsed % 60).toString().padStart(2, '0');
-            document.getElementById('timerDisplay').innerText = `${m}:${s}`;
-        }, 1000);
-    }
-
     function finish() {
-        clearInterval(timerInterval);
         const correctCount = userAnswers.filter((a, i) => a === questions[i].answer.toUpperCase()).length;
         window.location.href = `/result?score=${correctCount}&total=${questions.length}`;
     }
