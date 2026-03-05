@@ -103,17 +103,28 @@
 </div>
 
 <script>
-    const videos = [
-        { title: "Science of Light", desc: "Reflection and refraction.", cat: "Physics", url: "https://www.youtube.com/embed/SqkdT_kb3Lw" },
-        { title: "Electric Currents", desc: "Understanding circuits.", cat: "Physics", url: "https://www.youtube.com/embed/o_En8hmncR8" },
-        { title: "Newton's Laws", desc: "Classical mechanics.", cat: "Physics", url: "https://www.youtube.com/embed/kKKM8Y-u7ds" },
-        { title: "The Shell Model", desc: "Complex structure of atoms.", cat: "Chemistry", url: "https://www.youtube.com/embed/v6W_YpPrjV4" },
-        { title: "Chemical Reactions", desc: "Exothermic vs Endothermic.", cat: "Chemistry", url: "https://www.youtube.com/embed/T6i7mNfRAn8" },
-        { title: "How DNA Works", desc: "Biological blueprint.", cat: "Biology", url: "https://www.youtube.com/embed/yi0hwFDQTSQ" },
-        { title: "Photosynthesis", desc: "How plants make energy.", cat: "Biology", url: "https://www.youtube.com/embed/UPBMG5EYydo" },
-        { title: "Interactive Workshop", desc: "Live science demonstrations.", cat: "General", url: "https://www.youtube.com/embed/PomYLW0Jxa8" },
-        { title: "The Water Cycle", desc: "Earth's recycling system.", cat: "General", url: "https://www.youtube.com/embed/al-do-HGuIk" }
-    ];
+const videos = [
+    { title: "Science of Light", desc: "Reflection and refraction.", cat: "Physics", url: "https://www.youtube.com/embed/SqkdT_kb3Lw" },
+    { title: "Electric Currents", desc: "Understanding circuits.", cat: "Physics", url: "https://www.youtube.com/embed/o_En8hmncR8" },
+    { title: "Newton's Laws", desc: "Classical mechanics.", cat: "Physics", url: "https://www.youtube.com/embed/kKKM8Y-u7ds" },
+    { title: "Gravity Explained", desc: "Understanding gravitational force.", cat: "Physics", url: "https://www.youtube.com/embed/MTY1Kje0yLg" },
+    { title: "Waves and Sound", desc: "Basics of wave motion.", cat: "Physics", url: "https://www.youtube.com/embed/9cB4JZ1dQW4" },
+
+    { title: "The Shell Model", desc: "Complex structure of atoms.", cat: "Chemistry", url: "https://www.youtube.com/embed/v6W_YpPrjV4" },
+    { title: "Chemical Reactions", desc: "Exothermic vs Endothermic.", cat: "Chemistry", url: "https://www.youtube.com/embed/T6i7mNfRAn8" },
+    { title: "Periodic Table Basics", desc: "Understanding the periodic table.", cat: "Chemistry", url: "https://www.youtube.com/embed/fPnwBITSmgU" },
+    { title: "Acids and Bases", desc: "pH scale explained.", cat: "Chemistry", url: "https://www.youtube.com/embed/FSyAehMdpyI" },
+
+    { title: "How DNA Works", desc: "Biological blueprint.", cat: "Biology", url: "https://www.youtube.com/embed/yi0hwFDQTSQ" },
+    { title: "Photosynthesis", desc: "How plants make energy.", cat: "Biology", url: "https://www.youtube.com/embed/UPBMG5EYydo" },
+    { title: "Human Digestive System", desc: "How our body processes food.", cat: "Biology", url: "https://www.youtube.com/embed/Og5xAdC8EUI" },
+    { title: "The Cell Explained", desc: "Structure of animal and plant cells.", cat: "Biology", url: "https://www.youtube.com/embed/URUJD5NEXC8" },
+
+    { title: "Interactive Workshop", desc: "Live science demonstrations.", cat: "General", url: "https://www.youtube.com/embed/PomYLW0Jxa8" },
+    { title: "The Water Cycle", desc: "Earth's recycling system.", cat: "General", url: "https://www.youtube.com/embed/al-do-HGuIk" },
+    { title: "How Rockets Work", desc: "Basics of rocket science.", cat: "General", url: "https://www.youtube.com/embed/b1QJ4c0HqX8" },
+    { title: "Solar System Explained", desc: "Planets and space basics.", cat: "General", url: "https://www.youtube.com/embed/libKVRa01L8" }
+];
 
     function showCategory(cat) {
         document.getElementById('categoryView').classList.add('hidden');
