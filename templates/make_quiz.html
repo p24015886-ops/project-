@@ -30,6 +30,10 @@ input:focus, select:focus, textarea:focus {
 }
 .answer-btn { transition: 0.2s; }
 .answer-btn.active { background: #00e5ff !important; color: black !important; }
+
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-thumb { background: rgba(0, 229, 255, 0.3); border-radius: 10px; }
 </style>
 </head>
 
@@ -37,10 +41,10 @@ input:focus, select:focus, textarea:focus {
 
 <!-- Top Nav -->
 <div class="flex items-center justify-between mb-8">
-    <button onclick="location.href='/'" class="bg-white/10 hover:bg-white/20 px-4 py-2 rounded text-sm">
+    <button onclick="location.href='/'" class="bg-white/10 hover:bg-white/20 px-4 py-2 rounded text-sm transition">
         ← Home
     </button>
-    <h1 class="text-2xl font-bold text-cyan-400">📝 Create Quiz</h1>
+    <h1 class="text-2xl font-bold text-cyan-400 font-['Orbitron']">📝 Create Quiz</h1>
     <a href="/category" class="bg-cyan-400 text-black px-4 py-2 rounded font-bold text-sm hover:bg-cyan-300 transition">
         ▶ Start Quiz
     </a>
@@ -49,7 +53,7 @@ input:focus, select:focus, textarea:focus {
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
 <!-- LEFT PANEL: Quiz Settings -->
-<div class="glass p-6 rounded-xl space-y-4">
+<div class="glass p-6 rounded-xl space-y-4 h-fit sticky top-6">
     <h2 class="text-cyan-400 font-bold text-lg mb-2">Quiz Settings</h2>
 
     <input id="title" placeholder="Workshop / Quiz Title" class="w-full p-3 rounded">
@@ -63,50 +67,50 @@ input:focus, select:focus, textarea:focus {
         <option>General Science</option>
     </select>
 
-    <!-- LEVEL SECTION REMOVED AS PER REQUEST -->
-
     <textarea id="desc" placeholder="Description (optional)"
         class="w-full p-3 rounded h-20 resize-none"></textarea>
 
     <!-- JSON Upload -->
-    <div>
+    <div class="p-3 border border-dashed border-white/20 rounded-lg">
         <label class="text-sm text-cyan-300 block mb-1">Upload Questions (JSON)</label>
-        <input type="file" id="json-upload" accept=".json" class="w-full text-sm">
-        <p class="text-xs text-white/40 mt-1">Format: [{question, a, b, c, d, answer}, ...]</p>
+        <input type="file" id="json-upload" accept=".json" class="w-full text-xs cursor-pointer">
+        <p class="text-[10px] text-white/40 mt-1 uppercase tracking-tighter">Format: [{question, a, b, c, d, answer}]</p>
     </div>
 
     <button id="publish-btn"
-        class="w-full bg-cyan-400 text-black py-3 rounded font-bold hover:bg-cyan-300 transition">
+        class="w-full bg-cyan-500 text-black py-3 rounded font-bold hover:bg-cyan-400 transition-all transform active:scale-95">
         Publish Quiz
     </button>
 
-    <div id="status" class="text-sm mt-2 text-center"></div>
+    <div id="status" class="text-sm mt-2 text-center font-medium"></div>
 
     <!-- Existing Workshops List -->
     <div class="mt-6">
-        <h3 class="text-cyan-400 font-bold mb-3">Existing Quizzes</h3>
-        <div id="workshopList">
-            <!-- Quizzes rendered here -->
+        <h3 class="text-cyan-400 font-bold mb-3 flex items-center gap-2">
+            <span>Recent Quizzes</span>
+            <span class="text-[10px] bg-cyan-400/20 px-2 py-0.5 rounded text-cyan-300 uppercase">Database</span>
+        </h3>
+        <div id="workshopList" class="max-h-[300px] overflow-y-auto pr-1">
             {% if workshops %}
                 {% for ws in workshops %}
-                <div class="glass p-3 rounded-lg mb-2">
+                <div class="glass p-3 rounded-lg mb-2 border-l-4 border-cyan-500 hover:bg-white/10 transition-colors">
                     <div class="flex justify-between items-start">
-                        <div>
-                            <div class="text-sm font-bold">{{ ws.title }}</div>
-                            <div class="text-xs text-cyan-300">{{ ws.category }}</div>
+                        <div class="flex-1 min-w-0 pr-2">
+                            <div class="text-sm font-bold truncate">{{ ws.title }}</div>
+                            <div class="text-[10px] text-cyan-300 uppercase tracking-wider">{{ ws.category }}</div>
                         </div>
-                        <div class="flex gap-2">
+                        <div class="flex gap-2 shrink-0">
                             <button onclick="editWorkshop({{ ws.id }})"
-                                class="text-cyan-400 text-xs hover:text-cyan-200">Edit</button>
+                                class="text-cyan-400 text-xs hover:text-white transition">Edit</button>
                             <a href="/delete-workshop/{{ ws.id }}"
                                onclick="return confirm('Delete this quiz?')"
-                               class="text-red-400 text-xs hover:text-red-300">Delete</a>
+                               class="text-red-400 text-xs hover:text-red-300 transition">Delete</a>
                         </div>
                     </div>
                 </div>
                 {% endfor %}
             {% else %}
-                <p class="text-white/40 text-sm">No quizzes created yet.</p>
+                <p class="text-white/40 text-sm italic text-center py-4">No quizzes created yet.</p>
             {% endif %}
         </div>
     </div>
@@ -114,12 +118,21 @@ input:focus, select:focus, textarea:focus {
 
 <!-- RIGHT PANEL: Questions Editor -->
 <div class="lg:col-span-2">
-    <div class="flex justify-between items-center mb-4">
-        <h2 class="text-lg text-cyan-400">Questions (<span id="count">0</span>)</h2>
-        <button onclick="addBlankQuestion()"
-            class="bg-white/10 hover:bg-white/20 px-4 py-2 rounded text-sm">
-            + Add Question
-        </button>
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
+        <div>
+            <h2 class="text-lg text-cyan-400">Live Editor (<span id="count">0</span>)</h2>
+            <p class="text-xs text-white/40">Changes here are stored locally until published.</p>
+        </div>
+        <div class="flex gap-2">
+            <button onclick="deleteAllQuestions()"
+                class="bg-red-500/20 hover:bg-red-500/40 text-red-400 px-4 py-2 rounded text-sm transition">
+                🗑 Delete All
+            </button>
+            <button onclick="addBlankQuestion()"
+                class="bg-cyan-500 hover:bg-cyan-400 text-black px-4 py-2 rounded text-sm font-bold transition">
+                + Add Question
+            </button>
+        </div>
     </div>
     <div id="questions"></div>
 </div>
@@ -127,17 +140,29 @@ input:focus, select:focus, textarea:focus {
 </div>
 
 <!-- Edit Modal -->
-<div id="editModal" class="hidden fixed inset-0 bg-black/70 backdrop-blur flex items-center justify-center z-50">
-    <div class="glass p-6 rounded-xl w-full max-w-lg">
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="text-cyan-400 font-bold">Edit Quiz Questions</h3>
-            <button onclick="closeEdit()" class="text-white/60 hover:text-white">✕</button>
+<div id="editModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4">
+    <div class="glass w-full max-w-2xl rounded-2xl shadow-2xl border border-cyan-500/30">
+        <div class="p-6 border-b border-white/10 flex justify-between items-center">
+            <div>
+                <h3 class="text-cyan-400 font-bold text-xl">Edit Saved Questions</h3>
+                <p class="text-xs text-white/40 mt-1">Modifying data in database</p>
+            </div>
+            <button onclick="closeEdit()" class="text-white/40 hover:text-white transition-colors text-xl">✕</button>
         </div>
-        <div id="editQuestions" class="max-h-96 overflow-y-auto space-y-3"></div>
-        <button onclick="saveEdit()" class="w-full bg-cyan-400 text-black py-2 rounded font-bold mt-4 hover:bg-cyan-300 transition">
-            Save Changes
-        </button>
-        <div id="editStatus" class="text-sm text-center mt-2"></div>
+        
+        <div id="editQuestions" class="p-6 max-h-[60vh] overflow-y-auto space-y-4">
+            <!-- Questions loaded via JS -->
+        </div>
+
+        <div class="p-6 border-t border-white/10 flex gap-3">
+            <button onclick="closeEdit()" class="flex-1 bg-white/10 hover:bg-white/20 text-white py-3 rounded-xl font-bold transition">
+                Cancel
+            </button>
+            <button onclick="saveEdit()" class="flex-[2] bg-cyan-500 hover:bg-cyan-400 text-black py-3 rounded-xl font-bold transition shadow-[0_0_15px_rgba(0,229,255,0.3)]">
+                Save Changes
+            </button>
+        </div>
+        <div id="editStatus" class="text-sm text-center pb-4"></div>
     </div>
 </div>
 
@@ -146,6 +171,7 @@ let questions = [];
 let editWorkshopId = null;
 let editQuestionsData = [];
 
+// Handle JSON Upload
 document.getElementById("json-upload").addEventListener("change", function(e) {
     const file = e.target.files[0];
     if (!file) return;
@@ -157,8 +183,8 @@ document.getElementById("json-upload").addEventListener("change", function(e) {
             let data = Array.isArray(json) ? json : (Array.isArray(json.questions) ? json.questions : null);
             if (!data) { alert("Invalid JSON structure"); return; }
 
-            questions = data.map((q, i) => ({
-                id: Date.now() + i,
+            const newQuestions = data.map((q, i) => ({
+                id: Date.now() + Math.random(),
                 text: q.question || q.text || "",
                 a: q.a || q.option_a || "",
                 b: q.b || q.option_b || "",
@@ -166,9 +192,12 @@ document.getElementById("json-upload").addEventListener("change", function(e) {
                 d: q.d || q.option_d || "",
                 answer: (q.answer || q.correct_answer || "A").toUpperCase()
             }));
+            
+            questions = [...questions, ...newQuestions];
             render();
+            e.target.value = ""; // Reset file input
         } catch(err) {
-            alert("JSON Parse Error");
+            alert("JSON Parse Error: Please check file format.");
         }
     };
     reader.readAsText(file);
@@ -182,34 +211,50 @@ function addBlankQuestion() {
     }, 100);
 }
 
+function deleteAllQuestions() {
+    if (questions.length === 0) return;
+    if (confirm("Clear all questions from the current draft?")) {
+        questions = [];
+        render();
+    }
+}
+
 function render() {
     const container = document.getElementById("questions");
     container.innerHTML = "";
     document.getElementById("count").innerText = questions.length;
 
     if (questions.length === 0) {
-        container.innerHTML = `<div class="glass p-8 rounded-xl text-center text-white/40">
-            <p class="text-4xl mb-3">📋</p>
-            <p>No questions yet. Upload a JSON file or click "+ Add Question".</p>
+        container.innerHTML = `<div class="glass p-12 rounded-xl text-center text-white/40 border-dashed border-2 border-white/10">
+            <p class="text-5xl mb-4">📋</p>
+            <p class="text-lg font-medium">Draft is empty</p>
+            <p class="text-sm mt-1">Upload a JSON file or add a question to start building.</p>
         </div>`;
         return;
     }
 
     questions.forEach((q, index) => {
         const card = document.createElement("div");
-        card.className = "glass p-4 rounded-xl mb-4";
+        card.className = "glass p-6 rounded-xl mb-4 border-l-4 border-transparent hover:border-cyan-500 transition-all";
         card.innerHTML = `
-        <div class="flex justify-between items-center mb-3">
-            <span class="font-bold text-cyan-400">Q${index + 1}</span>
-            <button onclick="removeQ(${q.id})" class="text-red-400 text-sm hover:text-red-300">🗑 Delete</button>
+        <div class="flex justify-between items-center mb-4">
+            <span class="font-bold text-cyan-400 bg-cyan-400/10 px-3 py-1 rounded text-sm tracking-widest uppercase">Question ${index + 1}</span>
+            <button onclick="removeQ(${q.id})" class="text-red-400 text-sm hover:text-red-300 flex items-center gap-1 group">
+                <span class="group-hover:underline">Delete</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+            </button>
         </div>
-        <input value="${escHtml(q.text)}" placeholder="Question text" oninput="update(${q.id},'text',this.value)" class="w-full p-2 mb-3 rounded">
-        ${["A","B","C","D"].map(opt => `
-        <div class="flex items-center gap-2 mb-2">
-            <button onclick="setAnswer(${q.id},'${opt}')" class="answer-btn px-3 py-1 rounded font-bold text-sm bg-white/10 ${q.answer === opt ? 'active' : ''}">${opt}</button>
-            <input value="${escHtml(q[opt.toLowerCase()])}" placeholder="Option ${opt}" oninput="update(${q.id},'${opt.toLowerCase()}',this.value)" class="flex-1 p-2 rounded">
+        <input value="${escHtml(q.text)}" placeholder="Enter your question here..." oninput="update(${q.id},'text',this.value)" class="w-full p-3 mb-4 rounded-lg">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            ${["A","B","C","D"].map(opt => `
+            <div class="flex items-center gap-2">
+                <button onclick="setAnswer(${q.id},'${opt}')" class="answer-btn shrink-0 w-10 h-10 rounded-lg font-bold bg-white/5 border border-white/10 ${q.answer === opt ? 'active' : ''}">${opt}</button>
+                <input value="${escHtml(q[opt.toLowerCase()])}" placeholder="Option ${opt}" oninput="update(${q.id},'${opt.toLowerCase()}',this.value)" class="flex-1 p-2 rounded-lg text-sm">
+            </div>
+            `).join("")}
         </div>
-        `).join("")}
         `;
         container.appendChild(card);
     });
@@ -234,6 +279,7 @@ function removeQ(id) {
     render();
 }
 
+// Publish New Quiz
 document.getElementById("publish-btn").addEventListener("click", async function() {
     const title = document.getElementById("title").value.trim();
     const category = document.getElementById("category").value;
@@ -241,11 +287,11 @@ document.getElementById("publish-btn").addEventListener("click", async function(
     const status = document.getElementById("status");
 
     if (!title || !category || questions.length === 0) {
-        alert("Please fill in title, category, and add questions.");
+        alert("Please provide a Title, Category, and at least 1 Question.");
         return;
     }
 
-    status.innerHTML = "⏳ Publishing...";
+    status.innerHTML = "<span class='text-cyan-400 animate-pulse'>⏳ Publishing to database...</span>";
     this.disabled = true;
 
     try {
@@ -256,17 +302,18 @@ document.getElementById("publish-btn").addEventListener("click", async function(
         });
         const result = await response.json();
         if (result.success) {
-            status.innerHTML = "✅ Quiz Published!";
+            status.innerHTML = "<span class='text-green-400 font-bold'>✅ Success! Refreshing...</span>";
             setTimeout(() => location.reload(), 1500);
         } else {
-            status.innerHTML = "❌ Failed: " + (result.error || "Unknown error");
+            status.innerHTML = "<span class='text-red-400'>❌ Failed: " + (result.error || "Unknown error") + "</span>";
         }
     } catch(error) {
-        status.innerHTML = "❌ Server error";
+        status.innerHTML = "<span class='text-red-400'>❌ Server Connection Error</span>";
     }
     this.disabled = false;
 });
 
+// Modal Logic for Database Editing
 async function editWorkshop(workshopId) {
     editWorkshopId = workshopId;
     try {
@@ -274,36 +321,62 @@ async function editWorkshop(workshopId) {
         editQuestionsData = await res.json();
         renderEditModal();
         document.getElementById("editModal").classList.remove("hidden");
+        document.body.style.overflow = 'hidden'; // Prevent background scroll
     } catch(e) {
-        alert("Failed to load questions.");
+        alert("Failed to fetch questions from database.");
     }
 }
 
 function renderEditModal() {
     const container = document.getElementById("editQuestions");
     container.innerHTML = "";
+    
+    if(editQuestionsData.length === 0) {
+        container.innerHTML = "<p class='text-center py-10 text-white/30'>No questions found in this quiz.</p>";
+        return;
+    }
+
     editQuestionsData.forEach((q, index) => {
         const div = document.createElement("div");
-        div.className = "glass p-3 rounded-lg";
+        div.className = "glass p-4 rounded-xl border border-white/5 relative group";
         div.innerHTML = `
-        <div class="text-xs text-cyan-400 font-bold mb-1">Q${index + 1}</div>
-        <input value="${escHtml(q.text)}" oninput="editQuestionsData[${index}].text = this.value" class="w-full p-2 mb-2 rounded text-sm">
-        ${["a","b","c","d"].map(opt => `
-            <div class="flex items-center gap-2 mb-1">
-                <span class="text-xs text-white/60 w-4">${opt.toUpperCase()}</span>
-                <input value="${escHtml(q[opt])}" oninput="editQuestionsData[${index}]['${opt}'] = this.value" class="flex-1 p-1.5 rounded text-sm">
-            </div>
-        `).join("")}
+        <div class="flex justify-between items-center mb-2">
+            <div class="text-[10px] text-cyan-400 font-bold tracking-widest uppercase">Record ID: ${q.id || 'New'}</div>
+            <button onclick="removeEditQ(${index})" class="text-red-400 hover:text-red-300 opacity-0 group-hover:opacity-100 transition-opacity">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+            </button>
+        </div>
+        <input value="${escHtml(q.text)}" oninput="editQuestionsData[${index}].text = this.value" class="w-full p-2.5 mb-3 rounded-lg text-sm font-medium">
+        <div class="grid grid-cols-2 gap-3">
+            ${["a","b","c","d"].map(opt => `
+                <div class="flex items-center gap-2">
+                    <span class="text-[10px] font-bold text-white/40 w-4">${opt.toUpperCase()}</span>
+                    <input value="${escHtml(q[opt])}" oninput="editQuestionsData[${index}]['${opt}'] = this.value" class="flex-1 p-2 rounded text-xs bg-black/30 border-white/5">
+                </div>
+            `).join("")}
+        </div>
         `;
         container.appendChild(div);
     });
 }
 
-function closeEdit() { document.getElementById("editModal").classList.add("hidden"); }
+function removeEditQ(index) {
+    if(confirm("Delete this specific question from this record?")) {
+        editQuestionsData.splice(index, 1);
+        renderEditModal();
+    }
+}
+
+function closeEdit() { 
+    document.getElementById("editModal").classList.add("hidden"); 
+    document.body.style.overflow = 'auto';
+}
 
 async function saveEdit() {
     const status = document.getElementById("editStatus");
-    status.innerHTML = "⏳ Saving...";
+    status.innerHTML = "⏳ Updating database records...";
     try {
         const res = await fetch(`/api/update-workshop/${editWorkshopId}`, {
             method: "POST",
@@ -312,10 +385,12 @@ async function saveEdit() {
         });
         const result = await res.json();
         if (result.success) {
-            status.innerHTML = "✅ Saved!";
+            status.innerHTML = "✅ Database successfully updated!";
             setTimeout(closeEdit, 1000);
+        } else {
+            status.innerHTML = "❌ Failed: " + (result.error || "Unknown error");
         }
-    } catch(e) { status.innerHTML = "❌ Error"; }
+    } catch(e) { status.innerHTML = "❌ Server error occurred during update."; }
 }
 </script>
 

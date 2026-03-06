@@ -34,7 +34,6 @@ def category():
 
 @app.route("/videos")
 def videos():
-    """Restored function name to match url_for('videos')"""
     return render_template("videos.html")
 
 @app.route("/make-quiz")
@@ -57,7 +56,7 @@ def get_videos_api(category):
     if not conn: return jsonify([])
     try:
         cursor = conn.cursor(dictionary=True)
-        cursor.execute("SELECT title, description as `desc`, category as cat, url FROM videos WHERE category = %s", (category,))
+        cursor.execute("SELECT id, title, description as `desc`, category as cat, url FROM videos WHERE category = %s", (category,))
         data = cursor.fetchall()
         cursor.close()
         return jsonify(data)
@@ -85,18 +84,22 @@ def add_video_api():
     finally:
         conn.close()
 
-# ================= QUIZ & GAME API ENDPOINTS =================
-
-@app.route("/get-workshops/<category>")
-def get_workshops_api(category):
+@app.route("/api/delete-video/<int:video_id>", methods=["DELETE"])
+def delete_video_api(video_id):
     conn = get_db()
-    if not conn: return jsonify([])
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT id, title FROM workshops WHERE category = %s AND is_game = 0", (category,))
-    data = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    return jsonify(data)
+    if not conn: return jsonify({"success": False, "error": "DB Connection Error"})
+    try:
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM videos WHERE id = %s", (video_id,))
+        conn.commit()
+        cursor.close()
+        return jsonify({"success": True})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)})
+    finally:
+        conn.close()
+
+# ================= QUIZ & GAME API ENDPOINTS =================
 
 @app.route("/api/publish-workshop", methods=["POST"])
 def publish_workshop():
@@ -113,6 +116,34 @@ def publish_workshop():
         return jsonify({"success": True})
     except Exception as e: return jsonify({"success": False, "error": str(e)})
     finally: conn.close()
+
+@app.route("/api/update-workshop/<int:workshop_id>", methods=["POST"])
+def update_workshop_api(workshop_id):
+    """
+    NEW: Handles updating an existing quiz by replacing its questions.
+    """
+    data = request.json
+    conn = get_db()
+    if not conn: return jsonify({"success": False, "error": "DB Error"})
+    try:
+        cursor = conn.cursor()
+        # 1. Clear old questions
+        cursor.execute("DELETE FROM questions WHERE workshop_id = %s", (workshop_id,))
+        
+        # 2. Insert updated questions
+        for q in data['questions']:
+            cursor.execute(
+                "INSERT INTO questions (workshop_id, question_text, option_a, option_b, option_c, option_d, correct_answer) VALUES (%s, %s, %s, %s, %s, %s, %s)",
+                (workshop_id, q['text'], q['a'], q['b'], q['c'], q['d'], q['answer'])
+            )
+        
+        conn.commit()
+        cursor.close()
+        return jsonify({"success": True})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)})
+    finally:
+        conn.close()
 
 @app.route("/api/workshop-questions/<int:workshop_id>")
 def get_workshop_questions(workshop_id):
@@ -134,6 +165,17 @@ def delete_workshop(workshop_id):
         conn.commit()
         conn.close()
     return redirect(url_for('make_quiz'))
+
+@app.route("/get-workshops/<category>")
+def get_workshops_api(category):
+    conn = get_db()
+    if not conn: return jsonify([])
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT id, title FROM workshops WHERE category = %s AND is_game = 0", (category,))
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return jsonify(data)
 
 @app.route("/get-games/<category>")
 def get_games_api(category):
