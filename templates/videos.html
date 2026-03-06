@@ -98,7 +98,7 @@
                     <div class="text-5xl mb-4">🧬</div>
                     <h2 class="text-xl font-bold">Biology</h2>
                 </div>
-                <div class="glass p-8 rounded-2xl cat-card" onclick="showCategory('General')">
+                <div class="glass p-8 rounded-2xl cat-card" onclick="showCategory('General Science')">
                     <div class="text-5xl mb-4">🌍</div>
                     <h2 class="text-xl font-bold">General Science</h2>
                 </div>
@@ -119,7 +119,7 @@
             <h1 id="selectedCatTitle" class="text-2xl font-bold text-white mb-8 font-['Orbitron']">Videos</h1>
             
             <div id="videosGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Videos injected by JavaScript -->
+                <!-- Videos injected from MySQL -->
             </div>
         </div>
     </main>
@@ -129,7 +129,7 @@
 <div id="modalOverlay" class="fixed inset-0 hidden z-50 flex items-center justify-center p-4">
     <div class="glass w-full max-w-md rounded-2xl p-8 shadow-2xl relative">
         <button onclick="closeModal()" class="absolute top-4 right-4 text-white/50 hover:text-white">✕</button>
-        <h2 class="text-xl font-bold text-cyan-400 mb-6 font-['Orbitron']">Add New Video</h2>
+        <h2 class="text-xl font-bold text-cyan-400 mb-6 font-['Orbitron']">Add to Database</h2>
         
         <form id="addVideoForm" class="space-y-4">
             <div>
@@ -144,66 +144,48 @@
                 <label class="block text-xs uppercase text-white/40 mb-1">YouTube URL</label>
                 <input type="url" id="newUrl" required class="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:border-cyan-500 outline-none" placeholder="https://www.youtube.com/watch?v=...">
             </div>
-            <button type="submit" class="w-full bg-cyan-500 hover:bg-cyan-400 text-black py-3 rounded-lg font-bold transition-all">Save to Category</button>
+            <button type="submit" id="saveBtn" class="w-full bg-cyan-500 hover:bg-cyan-400 text-black py-3 rounded-lg font-bold transition-all">Save to MySQL</button>
         </form>
     </div>
 </div>
 
 <script>
-let activeCategory = "";
-const videos = [
-    // Physics
-    { title: "Science of Light", desc: "Reflection and refraction.", cat: "Physics", url: "https://www.youtube.com/embed/SqkdT_kb3Lw" },
-    { title: "Electric Currents", desc: "Understanding circuits.", cat: "Physics", url: "https://www.youtube.com/embed/o_En8hmncR8" },
-    { title: "Newton's Laws", desc: "Classical mechanics.", cat: "Physics", url: "https://www.youtube.com/embed/kKKM8Y-u7ds" },
-    { title: "Gravity Explained", desc: "Understanding gravitational force.", cat: "Physics", url: "https://www.youtube.com/embed/MTY1Kje0yLg" },
-    
-    // Chemistry
-    { title: "The Shell Model", desc: "Complex structure of atoms.", cat: "Chemistry", url: "https://www.youtube.com/embed/v6W_YpPrjV4" },
-    { title: "Chemical Reactions", desc: "Exothermic vs Endothermic.", cat: "Chemistry", url: "https://www.youtube.com/embed/T6i7mNfRAn8" },
-    { title: "Periodic Table Basics", desc: "Understanding the periodic table.", cat: "Chemistry", url: "https://www.youtube.com/embed/fPnwBITSmgU" },
+    let activeCategory = "";
 
-    // Biology
-    { title: "How DNA Works", desc: "Biological blueprint.", cat: "Biology", url: "https://www.youtube.com/embed/yi0hwFDQTSQ" },
-    { title: "Photosynthesis", desc: "How plants make energy.", cat: "Biology", url: "https://www.youtube.com/embed/UPBMG5EYydo" },
-    { title: "The Cell Explained", desc: "Structure of animal and plant cells.", cat: "Biology", url: "https://www.youtube.com/embed/URUJD5NEXC8" },
-
-    // General
-    { title: "Interactive Workshop", desc: "Live science demonstrations.", cat: "General", url: "https://www.youtube.com/embed/PomYLW0Jxa8" },
-    { title: "The Water Cycle", desc: "Earth's recycling system.", cat: "General", url: "https://www.youtube.com/embed/al-do-HGuIk" },
-    { title: "How Rockets Work", desc: "Basics of rocket science.", cat: "General", url: "https://www.youtube.com/embed/b1QJ4c0HqX8" }
-];
-
-    function showCategory(cat) {
+    async function showCategory(cat) {
         activeCategory = cat;
         document.getElementById('categoryView').classList.add('hidden');
         document.getElementById('videoListView').classList.remove('hidden');
         document.getElementById('selectedCatTitle').innerText = cat + " Videos";
-        renderVideos();
-    }
-
-    function renderVideos() {
-        const grid = document.getElementById('videosGrid');
-        grid.innerHTML = "";
         
-        const filtered = videos.filter(v => v.cat === activeCategory);
-        if(filtered.length === 0) {
-            grid.innerHTML = "<p class='text-white/40'>No videos available for this category yet.</p>";
-            return;
-        }
+        const grid = document.getElementById('videosGrid');
+        grid.innerHTML = "<p class='text-cyan-300'>Fetching from database...</p>";
+        
+        try {
+            const response = await fetch(`/api/get-videos/${encodeURIComponent(cat)}`);
+            const videos = await response.json();
+            
+            grid.innerHTML = "";
+            if(videos.length === 0) {
+                grid.innerHTML = "<p class='text-white/40'>No videos found in database for this category.</p>";
+                return;
+            }
 
-        filtered.forEach(v => {
-            const card = `
-                <div class="glass rounded-xl overflow-hidden flex flex-col group border-transparent hover:border-cyan-500/50 transition-all">
-                    <iframe class="w-full aspect-video" src="${v.url}" frameborder="0" allowfullscreen></iframe>
-                    <div class="p-4 flex-1">
-                        <h3 class="font-bold text-cyan-400 mb-2 group-hover:text-white">${v.title}</h3>
-                        <p class="text-xs text-blue-100/70">${v.desc}</p>
+            videos.forEach(v => {
+                grid.innerHTML += `
+                    <div class="glass rounded-xl overflow-hidden flex flex-col group border-transparent hover:border-cyan-500/50 transition-all">
+                        <iframe class="w-full aspect-video" src="${v.url}" frameborder="0" allowfullscreen></iframe>
+                        <div class="p-4 flex-1">
+                            <h3 class="font-bold text-cyan-400 mb-2 group-hover:text-white">${v.title}</h3>
+                            <p class="text-xs text-blue-100/70">${v.desc}</p>
+                        </div>
                     </div>
-                </div>
-            `;
-            grid.innerHTML += card;
-        });
+                `;
+            });
+        } catch (err) {
+            grid.innerHTML = "<p class='text-red-400'>Error connecting to server.</p>";
+            console.error(err);
+        }
     }
 
     function backToCategories() {
@@ -216,28 +198,48 @@ const videos = [
     function closeModal() { document.getElementById('modalOverlay').classList.add('hidden'); }
 
     // Form submission
-    document.getElementById('addVideoForm').addEventListener('submit', function(e) {
+    document.getElementById('addVideoForm').addEventListener('submit', async function(e) {
         e.preventDefault();
+        const saveBtn = document.getElementById('saveBtn');
+        saveBtn.innerText = "Saving...";
+        saveBtn.disabled = true;
+
         const title = document.getElementById('newTitle').value;
         const desc = document.getElementById('newDesc').value;
         const rawUrl = document.getElementById('newUrl').value;
         
-        // Basic Youtube URL to Embed converter
         let videoId = "";
         if (rawUrl.includes('v=')) {
             videoId = rawUrl.split('v=')[1].split('&')[0];
         } else if (rawUrl.includes('youtu.be/')) {
             videoId = rawUrl.split('youtu.be/')[1];
         } else {
-            videoId = rawUrl; // Fallback
+            videoId = rawUrl; 
         }
         
         const embedUrl = `https://www.youtube.com/embed/${videoId}`;
         
-        videos.push({ title, desc, cat: activeCategory, url: embedUrl });
-        renderVideos();
-        closeModal();
-        this.reset();
+        try {
+            const res = await fetch('/api/add-video', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title, desc, cat: activeCategory, url: embedUrl })
+            });
+            const result = await res.json();
+            
+            if(result.success) {
+                closeModal();
+                showCategory(activeCategory); 
+                this.reset();
+            } else {
+                alert("Error saving to MySQL: " + result.error);
+            }
+        } catch (err) {
+            alert("Server communication error.");
+        } finally {
+            saveBtn.innerText = "Save to MySQL";
+            saveBtn.disabled = false;
+        }
     });
 </script>
 </body>
