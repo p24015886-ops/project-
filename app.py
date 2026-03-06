@@ -10,7 +10,7 @@ app = Flask(__name__)
 db_config = {
     "host": "localhost",
     "user": "root",
-    "password": "StrongPassword123!",
+    "password": "Root@1234",
     "database": "science_quiz"
 }
 
@@ -246,3 +246,6 @@ def delete_game(game_id):
 if __name__ == "__main__":
     # Note: Running on 0.0.0.0 allows access from other devices on your network
     app.run(host="127.0.0.1", port=5050, debug=True)
+
+
+
