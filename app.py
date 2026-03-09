@@ -28,7 +28,32 @@ def normalize_category(raw_category):
     return raw_category.strip()
 
 # ================= NAVIGATION ROUTES =================
+# ================= VIDEO API ENDPOINTS =================
 
+@app.route("/api/get-videos/<category>")
+def get_videos_api(category):
+    conn = get_db()
+    if not conn:
+        return jsonify([])
+
+    try:
+        cursor = conn.cursor(dictionary=True)
+
+        cursor.execute("""
+            SELECT id, title, description AS `desc`, category AS cat, url
+            FROM videos
+            WHERE category = %s
+        """, (category,))
+
+        videos = cursor.fetchall()
+
+        cursor.close()
+        conn.close()
+
+        return jsonify(videos)
+
+    except Exception as e:
+        return jsonify({"error": str(e)})
 @app.route("/")
 def home():
     return render_template("index.html")
@@ -172,7 +197,36 @@ def delete_workshop(workshop_id):
     return redirect(url_for('make_quiz'))
 
 # ================= GAME API ENDPOINTS =================
+@app.route("/api/add-video", methods=["POST"])
+def add_video():
+    data = request.json
+    conn = get_db()
+    if not conn:
+        return jsonify({"success": False, "error": "Database connection failed"}), 500
 
+    try:
+        cursor = conn.cursor()
+        # Inserting the video into the 'videos' table
+        # Adjust column names based on your actual SQL schema
+        cursor.execute("""
+            INSERT INTO videos (title, description, category, url)
+            VALUES (%s, %s, %s, %s)
+        """, (
+            data.get('title'),
+            data.get('desc') or data.get('description'),
+            data.get('category') or data.get('cat'),
+            data.get('url')
+        ))
+
+        conn.commit()
+        cursor.close()
+        return jsonify({"success": True, "message": "Video added successfully!"})
+
+    except Exception as e:
+        print(f"❌ Error adding video: {e}")
+        return jsonify({"success": False, "error": str(e)}), 500
+    finally:
+        conn.close()
 @app.route("/get-games/<category>")
 def get_games_api(category):
     level = request.args.get('level')
@@ -246,6 +300,5 @@ def delete_game(game_id):
 if __name__ == "__main__":
     # Note: Running on 0.0.0.0 allows access from other devices on your network
     app.run(host="127.0.0.1", port=5050, debug=True)
-
 
 
