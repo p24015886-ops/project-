@@ -2,25 +2,34 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify
 import mysql.connector
 from mysql.connector import Error
 import json
-
+import os
 app = Flask(__name__)
 
 # ================= MYSQL CONFIGURATION =================
 # Ensure your MySQL server is running and the database 'science_quiz' exists
 db_config = {
-    "host": "localhost",
+    "host": "metro.proxy.rlwy.net",
     "user": "root",
-    "password": "Root@1234",
-    "database": "science_quiz"
+    "password": "pylgxsSSzpXGHuNbQVpHnfSajyJMQsUu",
+    "database": "railway",
+    "port": 22451
 }
 
 def get_db():
     try:
-        conn = mysql.connector.connect(**db_config)
+        conn = mysql.connector.connect(
+            host=db_config["host"],
+            user=db_config["user"],
+            password=db_config["password"],
+            database=db_config["database"],
+            port=db_config["port"]
+            # ❌ remove ssl_disabled
+        )
         return conn
-    except Error as e:
-        print(f"❌ Database Connection Error: {e}")
+    except Exception as e:
+        print("❌ DB Error:", e)
         return None
+    
 
 def normalize_category(raw_category):
     if not raw_category:
@@ -323,8 +332,7 @@ def delete_game(game_id):
     return redirect(url_for('games'))
 
 if __name__ == "__main__":
-    # Note: Running on 0.0.0.0 allows access from other devices on your network
-    app.run(host="127.0.0.1", port=5050, debug=True)
+    app.run()
 
 
 
