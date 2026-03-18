@@ -286,6 +286,31 @@ def game_questions_api():
     cursor.close()
     conn.close()
     return jsonify(data)
+@app.route("/api/delete-video/<int:video_id>", methods=["DELETE"])
+def delete_video(video_id):
+    conn = get_db()
+    if not conn:
+        return jsonify({"success": False, "error": "Database connection failed"}), 500
+
+    try:
+        cursor = conn.cursor()
+
+        cursor.execute("DELETE FROM videos WHERE id = %s", (video_id,))
+        conn.commit()
+
+        cursor.close()
+
+        return jsonify({
+            "success": True,
+            "message": "Video deleted successfully"
+        })
+
+    except Exception as e:
+        print(f"❌ Error deleting video: {e}")
+        return jsonify({"success": False, "error": str(e)}), 500
+
+    finally:
+        conn.close()
 
 @app.route("/delete-game/<int:game_id>")
 def delete_game(game_id):
@@ -300,5 +325,8 @@ def delete_game(game_id):
 if __name__ == "__main__":
     # Note: Running on 0.0.0.0 allows access from other devices on your network
     app.run(host="127.0.0.1", port=5050, debug=True)
+
+
+
 
 
