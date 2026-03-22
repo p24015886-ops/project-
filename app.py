@@ -51,7 +51,7 @@ def get_videos_api(category):
         cursor.execute("""
             SELECT id, title, description AS `desc`, category AS cat, url
             FROM videos
-            WHERE category = %s
+            WHERE LOWER(TRIM(category)) = LOWER(TRIM(%s))
         """, (category,))
 
         videos = cursor.fetchall()
