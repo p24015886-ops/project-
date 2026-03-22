@@ -39,8 +39,10 @@ def normalize_category(raw_category):
 # ================= NAVIGATION ROUTES =================
 # ================= VIDEO API ENDPOINTS =================
 
-@app.route("/api/get-videos/<category>")
-def get_videos_api(category):
+@app.route("/api/get-videos")
+def get_videos_api():
+    category = request.args.get("category", "")
+
     conn = get_db()
     if not conn:
         return jsonify([])

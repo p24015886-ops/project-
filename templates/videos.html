@@ -170,7 +170,7 @@
         grid.innerHTML = "<p class='text-cyan-300'>Fetching from database...</p>";
         
         try {
-            const response = await fetch(`/api/get-videos/${encodeURIComponent(cat)}`);
+            const response = await fetch(`/api/get-videos?category=${encodeURIComponent(cat)}`);
             const videos = await response.json();
             
             grid.innerHTML = "";
