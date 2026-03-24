@@ -37,7 +37,6 @@
 
         .main { flex: 1; padding: 40px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 
-        /* Quiz Card Styling */
         .glass-card {
             width: 100%;
             max-width: 820px;
@@ -58,7 +57,6 @@
 
         h1 { font-family: 'Orbitron', sans-serif; font-size: 28px; color: #00e5ff; letter-spacing: 1px; }
 
-        /* Badges */
         .stats-bar { display: flex; gap: 15px; }
         .stat-badge {
             background: rgba(0, 229, 255, 0.1);
@@ -70,11 +68,9 @@
             font-size: 13px;
         }
 
-        /* Progress Divider */
         .divider { width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 10px; margin-bottom: 40px; position: relative; overflow: hidden; }
         .progress-fill { height: 100%; background: #00e5ff; width: 0%; transition: width 0.4s; }
 
-        /* Setup Form */
         .setup-form { display: flex; flex-direction: column; gap: 20px; }
         .setup-form label { font-family: 'Orbitron', sans-serif; font-size: 10px; color: #00e5ff; margin-bottom: -15px; opacity: 0.7; }
         select {
@@ -112,7 +108,6 @@
         .option.correct { background: rgba(46, 204, 113, 0.2); border-color: #2ecc71; }
         .option.wrong { background: rgba(231, 76, 60, 0.2); border-color: #e74c3c; }
 
-        /* Navigation Controls */
         .nav-controls { display: flex; justify-content: space-between; margin-top: 50px; }
         .btn-pill {
             padding: 14px 40px;
@@ -156,7 +151,6 @@
         <div class="quiz-header">
             <h1 id="headerTitle">Science Challenge</h1>
             <div class="stats-bar">
-                <!-- Removed Timer Display -->
                 <div class="stat-badge">Score: <span id="scoreDisplay">0</span></div>
             </div>
         </div>
@@ -209,7 +203,6 @@
     let userAnswers = [];
     let score = 0;
 
-    /* Load Workshops when Category Changes */
     async function loadWorkshops() {
         const cat = document.getElementById('categorySelect').value;
         const wsSelect = document.getElementById('workshopSelect');
@@ -217,11 +210,12 @@
         wsSelect.innerHTML = '<option disabled selected>⏳ Loading workshops...</option>';
 
         try {
+            // UPDATE: Use encodeURIComponent to handle spaces in "General Science"
             const res = await fetch(`/get-workshops/${encodeURIComponent(cat)}`);
             const data = await res.json();
 
             wsSelect.innerHTML = '<option value="" disabled selected>-- Select a Workshop --</option>';
-            if(data.length === 0) {
+            if(!data || data.length === 0) {
                 wsSelect.innerHTML = '<option disabled>No quizzes found for this subject</option>';
             } else {
                 data.forEach(ws => {
@@ -233,6 +227,7 @@
                 wsSelect.disabled = false;
             }
         } catch(e) {
+            console.error("Fetch Error:", e);
             wsSelect.innerHTML = '<option disabled>Error loading data</option>';
         }
     }
@@ -241,19 +236,21 @@
         document.getElementById('startBtn').disabled = !document.getElementById('workshopSelect').value;
     });
 
-    /* Fetch Questions and Start Quiz */
     async function startQuizSession() {
         const wsId = document.getElementById('workshopSelect').value;
         const wsTitle = document.getElementById('workshopSelect').options[document.getElementById('workshopSelect').selectedIndex].text;
 
         try {
             const res = await fetch(`/api/workshop-questions/${wsId}`);
-            if (!res.ok) throw new Error("404 Not Found");
+            if (!res.ok) throw new Error("Quiz questions not found");
 
             questions = await res.json();
             if (questions.length === 0) { alert("This quiz has no questions yet!"); return; }
 
             userAnswers = new Array(questions.length).fill(null);
+            score = 0;
+            currentIndex = 0;
+            document.getElementById('scoreDisplay').innerText = "0";
             document.getElementById('headerTitle').innerText = wsTitle;
             document.getElementById('setupSection').classList.remove('active');
             document.getElementById('quizSection').classList.add('active');
