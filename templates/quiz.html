@@ -326,17 +326,26 @@
     async function loadWorkshops() {
         const cat = document.getElementById('categorySelect').value;
         const wsSelect = document.getElementById('workshopSelect');
+
+        if (!cat) return;
+
+        // Reset and show loading state
         wsSelect.disabled = true;
-        wsSelect.innerHTML = '<option disabled selected>⏳ Loading...</option>';
+        wsSelect.innerHTML = '<option disabled selected>⏳ Loading workshops...</option>';
+        document.getElementById('startBtn').disabled = true;
 
         try {
-            // Simulated API structure based on original code
+            // Use encodeURIComponent to handle spaces in names like "General Science"
             const res = await fetch(`/get-workshops/${encodeURIComponent(cat)}`);
+
+            if (!res.ok) throw new Error("Failed to fetch");
+
             const data = await res.json();
 
             wsSelect.innerHTML = '<option value="" disabled selected>-- Select a Workshop --</option>';
+
             if(!data || data.length === 0) {
-                wsSelect.innerHTML = '<option disabled>No quizzes found</option>';
+                wsSelect.innerHTML = '<option disabled>No workshops available</option>';
             } else {
                 data.forEach(ws => {
                     const opt = document.createElement('option');
@@ -347,6 +356,7 @@
                 wsSelect.disabled = false;
             }
         } catch(e) {
+            console.error("Error loading workshops:", e);
             wsSelect.innerHTML = '<option disabled>Error loading workshops</option>';
         }
     }
@@ -478,8 +488,3 @@
 
 </body>
 </html>
-
-
-
-
-
