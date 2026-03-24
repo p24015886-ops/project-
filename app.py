@@ -50,11 +50,15 @@ def get_videos_api():
     try:
         cursor = conn.cursor(dictionary=True)
 
+
+
+# In get_videos_api function
         cursor.execute("""
             SELECT id, title, description AS `desc`, category AS cat, url
             FROM videos
-            WHERE LOWER(TRIM(category)) = LOWER(TRIM(%s))
-        """, (category,))
+            WHERE category LIKE %s
+        """, (f"%{category.strip()}%",))
+
 
         videos = cursor.fetchall()
 
