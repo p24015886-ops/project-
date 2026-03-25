@@ -22,7 +22,9 @@ def get_db():
             user=db_config["user"],
             password=db_config["password"],
             database=db_config["database"],
-            port=db_config["port"]
+            port=db_config["port"],
+            connection_timeout=10
+            # ssl_disabled=False  # try enabling if needed
         )
         return conn
     except Exception as e:
