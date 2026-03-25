@@ -252,7 +252,12 @@
             const res = await fetch('/api/add-video', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title, desc, cat: activeCategory, url: embedUrl })
+             body: JSON.stringify({ 
+    title, 
+    desc, 
+    category: activeCategory,   // ✅ FIXED
+    url: embedUrl 
+})
             });
             const result = await res.json();
             
