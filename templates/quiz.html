@@ -35,6 +35,7 @@
         }
         .menu a:hover, .menu a.active { background: rgba(0,229,255,0.25); color: #fff; }
 
+        /* ===== MAIN CONTENT ===== */
         .main { flex: 1; padding: 40px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 
         .glass-card {
@@ -57,7 +58,6 @@
 
         h1 { font-family: 'Orbitron', sans-serif; font-size: 28px; color: #00e5ff; letter-spacing: 1px; }
 
-        .stats-bar { display: flex; gap: 15px; }
         .stat-badge {
             background: rgba(0, 229, 255, 0.1);
             border: 1px solid rgba(0, 229, 255, 0.3);
@@ -123,9 +123,7 @@
             font-size: 14px;
         }
         .btn-prev { background: rgba(255, 255, 255, 0.1); color: white; }
-        .btn-prev:hover:not(:disabled) { background: rgba(255, 255, 255, 0.2); }
         .btn-next { background: #00e5ff; color: #020b1a; }
-        .btn-next:hover:not(:disabled) { background: #fff; transform: scale(1.05); }
         .btn-pill:disabled { opacity: 0.3; cursor: not-allowed; }
 
         .feedback { margin-top: 20px; font-weight: 600; text-align: center; font-family: 'Orbitron', sans-serif; height: 24px; }
@@ -210,8 +208,8 @@
         wsSelect.innerHTML = '<option disabled selected>⏳ Loading workshops...</option>';
 
         try {
-            // UPDATE: Use encodeURIComponent to handle spaces in "General Science"
-            const res = await fetch(`/get-workshops/${encodeURIComponent(cat)}`);
+            // FIX: Using query parameters (?category=...) for hosted environments
+            const res = await fetch(`/get-workshops?category=${encodeURIComponent(cat)}`);
             const data = await res.json();
 
             wsSelect.innerHTML = '<option value="" disabled selected>-- Select a Workshop --</option>';
